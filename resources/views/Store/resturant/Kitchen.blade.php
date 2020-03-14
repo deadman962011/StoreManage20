@@ -75,7 +75,8 @@ $('.EditBtn').click(function(){
   var orderId= $(this).val();
 $.post({
   url:"{{ route('OrderKitchen',['StoreType'=>$StoreType,'StoreId'=>$StoreId]) }}",
-  data:{id:orderId}
+  data:{id:orderId,
+    _token: '{!! csrf_token() !!}',}
 }).done(function(data,textStatus){
 
 var delay = 300; 

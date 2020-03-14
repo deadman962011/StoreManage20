@@ -647,7 +647,8 @@ $(".ProdBtn").click(function(){
     var test=$(this).val();
     $.post({
         url:"{{ route('AddItem',['StoreType'=>$StoreType,'StoreId'=>$StoreId]) }}",
-        data:{id:test}
+        data:{id:test,
+          _token: '{!! csrf_token() !!}',}
     }).done(function(data,textStatus){
         
     });
@@ -666,7 +667,8 @@ $(document).on("click",".DelBtn",function(){
   var DelId=$(this).val();
   $.post({
       url:"{{ route('DelItem',['StoreType'=>$StoreType,'StoreId'=>$StoreId]) }}",
-      data:{DelId:DelId}
+      data:{DelId:DelId,
+        _token: '{!! csrf_token() !!}',}
   }).done(function(data,textData){
     $.get({
         url:"{{ route('getItems',['StoreType'=>$StoreType,'StoreId'=>$StoreId]) }}",
@@ -682,7 +684,8 @@ $(document).on("click",".IncreaseBtn",function(){
     var increase=$(this).val();
     $.post({
         url:"{{ route('AddItem',['StoreType'=>$StoreType,'StoreId'=>$StoreId]) }}",
-        data:{id:increase}
+        data:{id:increase,
+          _token: '{!! csrf_token() !!}',}
     });
 
     $.get({
@@ -704,7 +707,9 @@ var reduce=$(this).val();
 
      $.post({
       url:"{{  route('ReduceItem',['StoreType'=>$StoreType,'StoreId'=>$StoreId])  }}",
-      data:{id:reduce}
+      data:{id:reduce,
+        _token: '{!! csrf_token() !!}',
+      }
       });
 
     $.get({
@@ -724,7 +729,8 @@ $("#cancelOrder").click(function(){
 console.log("cancel Presed")
 
 $.post({
-  url:"{{ route('CancelItems',['StoreType'=>$StoreType,'StoreId'=>$StoreId]) }}"
+  url:"{{ route('CancelItems',['StoreType'=>$StoreType,'StoreId'=>$StoreId]) }}",
+  data: {_token: '{!! csrf_token() !!}'},
 }).done(function(data4,textStatus4){
   $(".test").html(data4);
 })
@@ -864,7 +870,8 @@ var $form = $('.PayForm');
                     OrderTableI:$("input[name='OrderTableI']:checked").val(),
                     OrderTableNameI:$("input[name='OrderTableNameI']").val(),
                     PaymentWayI:$("input[name='PaymentWayI']:checked").val(),
-                    CasherId:$("input[name='PaymentWayI']").val()
+                    CasherId:$("input[name='PaymentWayI']").val(),
+                    _token: '{!! csrf_token() !!}',
                   };
                   }
                   if(target =="#WaitingPay"){
@@ -873,7 +880,8 @@ var $form = $('.PayForm');
                     idWaiting:$("input[name='idWaiting']").val(),
                     OrderTypeIWaiting:$("input[name='OrderTypeIWaiting']").val(),
                     PaymentWayIWait:$form.find("input[name='PaymentWayIWait']:checked").val(),
-                    TableIdWaiting:$form.find("input[name='TableIdWaiting']").val()
+                    TableIdWaiting:$form.find("input[name='TableIdWaiting']").val(),
+                    _token: '{!! csrf_token() !!}',
                   };
                   }
 

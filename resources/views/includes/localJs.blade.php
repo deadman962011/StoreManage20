@@ -58,7 +58,9 @@
                   var token = response.id;
                   
                   var data= { token:token,
-                              planType:$form.find("input[name=PlanType]:checked").val()};
+                              planType:$form.find("input[name=PlanType]:checked").val(),
+                              _token: '{!! csrf_token() !!}',
+                              };
                   // AJAX - you would send 'token' to your server here.
                   $.post('{{ route("PayWithStripe") }}',data)
                       // Assign handlers immediately after making the request,

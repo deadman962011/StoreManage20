@@ -113,7 +113,7 @@ $.ajaxSetup({
 
 $.post({
   url:"{{ route("StoreMainPost",['StoreType'=>$StoreType,'StoreId'=>$StoreId]) }}",
-  data:{ _token: '{!! csrf_token() !!}'}
+  data:{ _token: '{{ csrf_token() }}'}
 }).done(function(resp,textStatus){
 
 console.log(resp)

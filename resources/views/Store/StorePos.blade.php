@@ -677,7 +677,8 @@ var data={
           OrderTableI:$("input[name='OrderTableI']:checked").val(),
           OrderTableNameI:$("input[name='OrderTableNameI']").val(),
           PaymentWayI:$("input[name='PaymentWayI']:checked").val(),
-          CasherId:$("input[name='PaymentWayI']").val()
+          CasherId:$("input[name='PaymentWayI']").val(),
+          _token: '{!! csrf_token() !!}',
         };
        }
       if(target =="#WaitingPay"){
@@ -685,7 +686,8 @@ var data={
         token:token,
         idWaiting:$("input[name='idWaiting']").val(),
         OrderTypeIWaiting:$("input[name='OrderTypeIWaiting']").val(),
-        PaymentWayIWait:$form.find("input[name='PaymentWayIWait']:checked").val()
+        PaymentWayIWait:$form.find("input[name='PaymentWayIWait']:checked").val(),
+        _token: '{!! csrf_token() !!}',
       };
 
         
