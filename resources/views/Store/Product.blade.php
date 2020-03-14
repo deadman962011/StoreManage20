@@ -58,7 +58,7 @@
         </tr>
       @foreach ($Products as $Product)
        <tr>
-        <td><img src="/storage/products/{{$Product->Image["PicSource"] }}" class='img-responsive'>  </td>
+        <td><img src="{{ Storage::url("products/{$Product->Image["PicSource"]}")  }}" class='img-responsive'>  </td>
          <td>{{ $Product['ProdName']}}</td>
          <td>{{$Product->Catigory['CatigoryName']}}</td>
          <td >{{ $Product['ProdPrice']}}</td>
