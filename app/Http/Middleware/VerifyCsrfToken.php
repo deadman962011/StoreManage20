@@ -20,7 +20,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         //
-       'users/Dashboard/{StoreType}/{SotreId}',
+       '/users/Dashboard/{StoreType}/{SotreId}',
        'users/Dashboard/{StoreType}/{SotreId}/OrderKitchen',
        'users/Dashnoard/{StoreType}/{SotreId}/Pos/AddItem',
        'users/Dashnoard/{StoreType}/{SotreId}/Pos/getItems',
