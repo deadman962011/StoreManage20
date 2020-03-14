@@ -97,7 +97,7 @@
 @section('script')
 @include('includes.localJs')   
 
-<script src="http://127.0.0.1/cdn/store-manage/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 
 <script>
 $.ajaxSetup({
