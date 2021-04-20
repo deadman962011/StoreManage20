@@ -1,5 +1,9 @@
 @extends('layout.nativeBase')
 
+@section('title')
+    <title>{{ trans('lang.DeliveryViewTitle') }}</title>
+@endsection
+
 
 @section("content")
 
@@ -23,7 +27,12 @@
                      <h4 class="text-center">Items</h4>
                     <ul class="list-group">
                         @foreach ($order->OrderCart->items as $item)
-                        <li class="list-group-item">{{$item['item']->ProdName}}<span class="label label-default pull-left">{{$item['qty']}}</span></li>
+                        <li class="list-group-item">{{$item['item']->ProdName}}
+                            @if( str_replace('_','-',app()->getLocale()) == 'ar' )
+                             <span class="label label-default pull-left">{{$item['qty']}}</span></li>
+                            @else
+                             <span class="label label-default pull-right">{{$item['qty']}}</span></li>
+                            @endif
                         @endforeach  
                     </ul>
                     <h4 class='text-center'>Deliver Informations</h4>
@@ -35,8 +44,11 @@
 
                  </div>
                  <div class="panel-footer">
+                    @if( str_replace('_','-',app()->getLocale()) == 'ar' )
                      <h4 class='pull-left'><span>Delivery></span>DName</h4>
-
+                    @else
+                     <h4 class='pull-right'><span>Delivery></span>DName</h4>
+                    @endif
                      <form action="{{ route("DeliveryPost",["StoreType"=>$StoreType,"StoreId"=>$StoreId]) }}" method="post">
                         <button class="btn btn-primary" name='DeliveryDone' value='{{ $order['id'] }}'>Deliver</button>
                         {{ csrf_field() }}                

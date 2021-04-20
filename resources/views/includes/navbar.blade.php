@@ -27,8 +27,8 @@
   @else
   <ul class="dropdown-menu dropdown-menu-right">
   @endif
-          <li><a href="{{route("UpdateUser")}}">Update</a></li>
-          <li><a href="{{route('LogOut')}}" >Log Out<span class="glyphicon glyphicon-off"></span> </a></li>
+          <li><a href="{{route("UpdateUser")}}">{{ trans("lang.UserManage")}}</a></li>
+          <li><a href="{{route('LogOut')}}" >{{ trans("lang.LogOut")}}</a></li>
         </ul>
       </li>
 
@@ -38,11 +38,6 @@
           @else
           <ul class="dropdown-menu dropdown-menu-right NotifDropdown">
           @endif
-          @if ($UserInf['PlanDayLeft'] < "4")
-          <li class='NotifElErr' style="">Day Left {{$UserInf['PlanDayLeft']}}</li>
-          @endif
-
-
 
           @foreach ($Notifs as $notif)
           @if ($notif['NotifStatus'] == "0")
@@ -51,9 +46,13 @@
           <li class='NotifEl'>{{ $notif['NotifValue'] }}</li>
           @endif
           @endforeach
-         
         </ul>
       </li>
+      @if( str_replace('_','-',app()->getLocale()) == 'ar' )
+       <li><a href="/en">EN</a></li>
+      @else
+      <li><a href="/ar">العربية</a></li>
+      @endif
     </ul>
   </div>
     </div>

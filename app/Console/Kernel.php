@@ -28,6 +28,8 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->command('cron:daily')->everyMinute();
+        $schedule->command("cron:MonthlyReport")->monthly();
+        $schedule->command("cron:WeeklyReport")->weekly();
     }
 
     /**

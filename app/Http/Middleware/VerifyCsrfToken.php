@@ -19,7 +19,7 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-       'http://store2020.herokuapp.com/users/Dashboard/{StoreType}/{SotreId}',
+       'users/Dashboard/{StoreType}/{SotreId}',
        '/users/Dashboard/{StoreType}/{SotreId}/OrderKitchen',
        '/users/Dashnoard/{StoreType}/{SotreId}/Pos/AddItem',
        '/users/Dashnoard/{StoreType}/{SotreId}/Pos/getItems',

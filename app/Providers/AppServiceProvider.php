@@ -31,12 +31,26 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer("includes.navbar",function($view){
 
-            $getUser=Auth::user();
+            $getUser=Auth::guard()->user();
             $UserId=$getUser['id'];
             $UserDays=$getUser['PlanDayLeft'];
             $Notifs=StoreNotif::where("UserId",$UserId)->orderBy("created_at","DESC")->get();
             $NotifCount=$Notifs->count();
             $view->with(["Notifs"=>$Notifs,"NotifCount"=>$NotifCount,"UserInf"=>$getUser]);
+        });
+
+        view()->composer("includes.error",function($view){
+            $getUser=Auth::guard()->user();
+            $UserDays=$getUser['PlanDayLeft'];
+
+            if(!empty($getUser)){
+            if($UserDays < 4){
+                session()->put("PlanErr",['DayLeft'=>$UserDays]);
+            }
+           }
+           else{
+               session()->forget("PlanErr");
+           }
         });
     }
 }

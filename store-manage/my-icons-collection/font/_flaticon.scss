@@ -1,0 +1,70 @@
+    /*
+    Flaticon icon font: Flaticon
+    Creation date: 16/03/2020 17:49
+    */
+
+    @font-face {
+  font-family: "Flaticon";
+  src: url("./Flaticon.eot");
+  src: url("./Flaticon.eot?#iefix") format("embedded-opentype"),
+       url("./Flaticon.woff2") format("woff2"),
+       url("./Flaticon.woff") format("woff"),
+       url("./Flaticon.ttf") format("truetype"),
+       url("./Flaticon.svg#Flaticon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("./Flaticon.svg#Flaticon") format("svg");
+  }
+}
+
+    .fi:before{
+        display: inline-block;
+  font-family: "Flaticon";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+    }
+
+    .flaticon-marketing:before { content: "\f100"; }
+.flaticon-tablet:before { content: "\f101"; }
+.flaticon-research:before { content: "\f102"; }
+.flaticon-pay:before { content: "\f103"; }
+.flaticon-coffee-cup:before { content: "\f104"; }
+.flaticon-tshirt:before { content: "\f105"; }
+.flaticon-gift:before { content: "\f106"; }
+.flaticon-eat:before { content: "\f107"; }
+.flaticon-food-truck:before { content: "\f108"; }
+.flaticon-blender:before { content: "\f109"; }
+.flaticon-responsive:before { content: "\f10a"; }
+.flaticon-book-shop:before { content: "\f10b"; }
+.flaticon-add:before { content: "\f10c"; }
+.flaticon-store:before { content: "\f10d"; }
+.flaticon-pharmacy:before { content: "\f10e"; }
+    
+    $font-Flaticon-marketing: "\f100";
+    $font-Flaticon-tablet: "\f101";
+    $font-Flaticon-research: "\f102";
+    $font-Flaticon-pay: "\f103";
+    $font-Flaticon-coffee-cup: "\f104";
+    $font-Flaticon-tshirt: "\f105";
+    $font-Flaticon-gift: "\f106";
+    $font-Flaticon-eat: "\f107";
+    $font-Flaticon-food-truck: "\f108";
+    $font-Flaticon-blender: "\f109";
+    $font-Flaticon-responsive: "\f10a";
+    $font-Flaticon-book-shop: "\f10b";
+    $font-Flaticon-add: "\f10c";
+    $font-Flaticon-store: "\f10d";
+    $font-Flaticon-pharmacy: "\f10e";

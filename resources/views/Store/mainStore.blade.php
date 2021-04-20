@@ -1,5 +1,12 @@
 
 @extends('layout.nativeBase')
+
+
+@section('title')
+    <title>{{ trans('lang.DashboardViewTitle') }}</title>
+@endsection
+
+
 @section('style')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
@@ -15,6 +22,7 @@
    
   <div class='StoreContent'>
    @include('includes.navbar')
+   @include("includes.error")
     
    <style>
   .DashboardPanel{
@@ -81,7 +89,7 @@
         <div class="panel">
          <div class="panel-body">
            <p>Payment Ways Usage</p>
-         <canvas id="myPieChart" width="315px";  height="390" class="chartjs-render-monitor" style="display: block; width:100%: height:100%;"></canvas>
+         <canvas id="myPieChart" width="315px";  height="390" class="chartjs-render-monitor" style="display: block; width:100%; height:100%;"></canvas>
          </div>
         </div>
      </div>
@@ -95,7 +103,9 @@
 @endsection
 
 @section('script')
-@include('includes.localJs')   
+  
+
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
 

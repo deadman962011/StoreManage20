@@ -19,7 +19,7 @@ class DailyCron extends Command
      *
      * @var string
      */
-    protected $description = 'change left days for registerd users';
+    protected $description = 'Reduce left days for registerd users';
 
     /**
      * Create a new command instance.
@@ -49,9 +49,7 @@ class DailyCron extends Command
       //
 
       //change user status to suspend if PlanDayLeft ==0
-      $users2=StoreUser::where('PlanDayLeft','=','0')->update(['PlanType'=>'0']);
-          $this->info($users2);
-      
+      $users2=StoreUser::where('PlanDayLeft','=','0')->update(['PlanType'=>'0']);      
       //
 
 

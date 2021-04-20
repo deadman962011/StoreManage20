@@ -1,5 +1,8 @@
 @extends('layout.nativeBase')
 
+@section('title')
+    <title>{{ trans('lang.WatiersViewTitle') }}</title>
+@endsection
 
 
 @section("content")
@@ -8,18 +11,7 @@
     @include('includes.resturantNav')
 <div class="StoreContent">
     @include('includes.navbar')
-    @if (!empty(session('err')))
-    @if (session('err')['err'] == "0")
-    <div id='StoreAlert' class="alert alert-success col-sm-8 col-sm-offset-2">
-     <strong>{{ session('err')['message'] }}</strong>
-   </div>
-    @endif
-    @if (session('err')['err'] == "1")
-    <div id='StoreAlert' class="alert alert-danger col-sm-8 col-sm-offset-2" >
-     <strong>{{ session('err')['message'] }}</strong>
-   </div>
-    @endif      
-  @endif
+    @include('includes.error')
     <div class='Dashboard2'>
    @foreach ($Orders as $order)
         <div class="col-sm-11 ">
@@ -28,13 +20,22 @@
                     <h4 class='text-center'>Items</h4>
                     <ul class="list-group">
                         @foreach ($order->OrderCart->items as $item)
-                        <li class="list-group-item">{{$item['item']->ProdName}}<span class="label label-default pull-left">{{$item['qty']}}</span></li>
+                        <li class="list-group-item">{{$item['item']->ProdName}}
+                            @if( str_replace('_','-',app()->getLocale()) == 'ar' )
+                             <span class="label label-default pull-left">{{$item['qty']}}</span></li>
+                            @else
+                             <span class="label label-default pull-right">{{$item['qty']}}</span></li>
+                            @endif
                         @endforeach  
-                     
                   </ul>
+                  <h4 class="text-center">Order Name: <span>{{$order->OrderName}}</span></h4>
                 </div>
                 <div class="panel-footer">
-                    <h4 class='pull-left'>table> {{($order->OrderInf['TableName'])}}</h4>
+                    @if( str_replace('_','-',app()->getLocale()) == 'ar' )
+                     <h4 class='pull-left'>table> {{($order->OrderInf['TableName'])}}</h4>
+                    @else
+                     <h4 class='pull-right'>table> {{($order->OrderInf['TableName'])}}</h4>
+                    @endif
                     <form action="{{route("waiterPost",["StoreType"=>$StoreType,"StoreId"=>$StoreId])}}" method="post">
                         <button value="{{$order['id']}}" name='OrderDoneI' class="btn btn-primary EditBtn">ready</button>
                         {{csrf_field()}}

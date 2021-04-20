@@ -32,6 +32,5 @@ public function mainGet($lang)
   else{
     return redirect()->route('main',["lang"=>'ar']);
      }
-}
-
+ }
 }

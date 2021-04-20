@@ -1,6 +1,10 @@
 @extends('layout.nativeBase')
 
 
+@section('title')
+    <title>{{ trans('lang.DashboardViewTitle') }}</title>
+@endsection
+
 @section("content")
 <div class='wrapper'>
 @include('includes.resturantNav')

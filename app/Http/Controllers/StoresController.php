@@ -22,6 +22,7 @@ use App\StoreRepo;
 use App\StoreRepProds;
 use App\StorePayToken;
 use App\StoreNotif;
+use App\StoreReport;
 
 use Auth;
 
@@ -36,7 +37,7 @@ public function StoremainGet($StoreType,$StoreId)
 {
 
 //get user
-$getUser=Auth::user();
+$getUser=Auth::guard("StoreUsers")->user();
 $userId=$getUser['id'];
 
 //params validation
@@ -62,10 +63,6 @@ $getOrders=StoreOrder::where([["OrderStoreId",$StoreId],['OrderStatus','success'
  }
  }
 }
-
-
-
-
 
 
 public function StormainPost(Request $request,$StoreType,$StoreId)
@@ -113,9 +110,9 @@ public function StormainPost(Request $request,$StoreType,$StoreId)
 }
     else{
         $monthChartAr=array(
-            "months"=>"",
-            "Orders"=>"0",
-            "MaxOrders"=>"10"
+            "months"=>["Today"],
+            "Orders"=>[0],
+            "MaxOrders"=>10
         );
     }
 
@@ -173,9 +170,9 @@ $monthChartPae=array(
 }
     else{
         $DayChartArr=array(
-            "Days"=>"",
-            "Orders"=>"0",
-            "MaxOrders"=>"10"
+            "Days"=>["Today"],
+            "Orders"=>[0],
+            "MaxOrders"=>10
         );
     }
 
@@ -185,8 +182,18 @@ return response()->json(["AreaChart"=>$monthChartAr,"DayChart"=>$DayChartArr,"Pa
 }
 
 
+
+
+
+
+
 public function PosGet($StoreType,$StoreId)
 {
+
+
+   $CartName="cart".$StoreId;
+   $DelCart=Session::has($CartName) ? Session::forget($CartName) :Session::forget($CartName);
+
    $getCatigory=StoreCatigory::where("CatigoryStoreId","=",$StoreId)->get();
    $getProducts=StoreProduct::where("ProdStoreId",'=',$StoreId)->get();
    $withProds=$getCatigory->load("Products");
@@ -209,7 +216,7 @@ public function PosGet($StoreType,$StoreId)
   $getCasher=StoreEmployee::where([["EmployeeStoreId",'=',$StoreId],['EmployeeType','=','Casher']])->get();
   //
  
-  $getUser=Auth::user();
+  $getUser=Auth::guard("StoreUsers")->user();
   $getUserId=$getUser['id'];
 
   //get Payment Api Key
@@ -269,7 +276,7 @@ public function ProductGet($StoreType,$StoreId)
 
 public function AddProdPost(Request $request,$StoreType,$StoreId)
 {
-    $getUser=Auth::user();
+    $getUser=Auth::guard("StoreUsers")->user();
     //set Plan Limit
    
     if($getUser['PlanType'] =="1"){
@@ -351,7 +358,7 @@ public function AddProdPost(Request $request,$StoreType,$StoreId)
  
              
             ///Add new notifcation
-            $getUser=Auth::user();
+            $getUser=Auth::guard("StoreUsers")->user();
 
             $UserId=$getUser['id'];
             $NotifValue="Product ".$saveProd["ProdName"] ." Saved";
@@ -364,10 +371,10 @@ public function AddProdPost(Request $request,$StoreType,$StoreId)
 
             $saveNotif->save();
 
-              return redirect()->route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>"0",'message'=>"Product successfully created"]);
+              return redirect()->route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>"0",'message'=>"ProductCreatedErr"]);
      }
      else{
-        return redirect()->route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>"1",'message'=>"Cant create New Product"]);
+        return redirect()->route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>"1",'message'=>"PlanProdErr"]);
      }
  }
 
@@ -408,7 +415,7 @@ public function DelProdGet ($StoreType,$StoreId,$ProdId)
 
 
         ///Add new notifcation
-        $getUser=Auth::user();
+        $getUser=Auth::guard("StoreUsers")->user();
         $UserId=$getUser['id'];
         $NotifValue="Product ".$delProd["ProdName"] ." Deleted";
         $saveNotif=new StoreNotif([
@@ -419,7 +426,7 @@ public function DelProdGet ($StoreType,$StoreId,$ProdId)
         $saveNotif->save();
         
 
-   return redirect()->route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>"0",'message'=>"Product Deleted Successfuly"]);
+   return redirect()->route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>"0",'message'=>"ProdDeletedErr"]);
 
 }
 
@@ -525,7 +532,7 @@ public function UpdateProd(Request $request,$StoreType,$StoreId)
     ]);
 
         ///Add new notifcation
-        $getUser=Auth::user();
+        $getUser=Auth::guard("StoreUsers")->user();
         $UserId=$getUser['id'];
         $NotifValue="Table ".$UpdateProd["ProdName"] ." Updated";
         $saveNotif=new StoreNotif([
@@ -535,10 +542,10 @@ public function UpdateProd(Request $request,$StoreType,$StoreId)
         ]);
         $saveNotif->save();
         
-    return redirect()->route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>"0","message"=>"Product Updated Successfully"]);
+    return redirect()->route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>"0","message"=>"ProdUpdatedErr"]);
     }
       else{
-          return redirect()->route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'1','message'=>'Somthing Wrong']);
+          return redirect()->route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'1','message'=>'SW']);
       }
     
 }
@@ -566,20 +573,14 @@ public function CatigoryGet($StoreType,$StoreId)
 public function AddCatigoryPost(Request $request,$StoreType,$StoreId)
 {
 
-
-
-
-
-
    $checkCatigory=StoreCatigory::where([['CatigoryStoreId','=',$StoreId],['CatigoryName','=',$request->input("CatigoryNameI")]])->count();
-
    if($checkCatigory =="1"){
-       return  redirect()->route('Catigories',['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",["err"=>"1","message"=>"Catigory Already Exist"]);
+       return  redirect()->route('Catigories',['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",["err"=>"1","message"=>"CatigoryExsistErr"]);
    }
    else{
 
 
-    $getUser=Auth::user();
+    $getUser=Auth::guard("StoreUsers")->user();
     //set Plan Limit
    
     if($getUser['PlanType'] =="1"){
@@ -614,7 +615,7 @@ public function AddCatigoryPost(Request $request,$StoreType,$StoreId)
 
 
         ///Add new notifcation
-        $getUser=Auth::user();
+        $getUser=Auth::guard("StoreUsers")->user();
 
         $UserId=$getUser['id'];
         $NotifValue="Catigory ".$addCatiogry["CatigoryName"] ." Saved";
@@ -627,22 +628,13 @@ public function AddCatigoryPost(Request $request,$StoreType,$StoreId)
 
         $saveNotif->save();
 
-        return  redirect()->route('Catigories',['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",["err"=>"0","message"=>"  Catigory Successfully Created"]);
+        return  redirect()->route('Catigories',['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",["err"=>"0","message"=>"CatigoryCreatedErr"]);
     }
     else{
-        return  redirect()->route('Catigories',['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",["err"=>"1","message"=>"Cant Create Catigory"]);
+        return  redirect()->route('Catigories',['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",["err"=>"1","message"=>"PlanCatigoryErr"]);
     }
    }
 }
-
-
-
-
-
-
-
-
-
 
 
 public function DelCatigory(Request $request,$StoreType,$StoreId,$CatId)
@@ -662,7 +654,7 @@ public function DelCatigory(Request $request,$StoreType,$StoreId,$CatId)
     $delCatigory=$getCatigory->delete();
 
         ///Add new notifcation
-
+       $getUser=Auth::guard("StoreUsers")->user();
         $UserId=$getUser['id'];
         $NotifValue="Employee ".$delCatigory["CatigoryName"] ." Delted";
     
@@ -674,9 +666,7 @@ public function DelCatigory(Request $request,$StoreType,$StoreId,$CatId)
     
         $saveNotif->save();
 
-    return  redirect()->route('Catigories',['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with(["err"=>"0","message"=>"Catigory Deleted successfully"]);
-
-
+    return  redirect()->route('Catigories',['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",["err"=>"0","message"=>"CatigoryDeletedErr"]);
 }
 
 
@@ -696,7 +686,7 @@ public function AddEmployee(Request $request,$StoreType,$StoreId)
 {
 
 
-    $getUser=Auth::user();
+    $getUser=Auth::guard("StoreUsers")->user();
     //set Plan Limit
    
     if($getUser['PlanType'] =="1"){
@@ -759,10 +749,10 @@ public function AddEmployee(Request $request,$StoreType,$StoreId)
 
     $saveNotif->save();
 
-        return  redirect()->route('Employee',["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",['err' => '0',"message"=>"Employee Created Successfuly"]);
+        return  redirect()->route('Employee',["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",['err' => '0',"message"=>"EmployeeCreatedErr"]);
     }
     else{
-        return  redirect()->route('Employee',["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",['err' => '1',"message"=>"Cant Create New Employee"]);
+        return  redirect()->route('Employee',["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",['err' => '1',"message"=>"PlanEmployeeErr"]);
     }
 
 
@@ -779,7 +769,7 @@ $getEmployee=StoreEmployee::find($EmpId);
 $delEmployee=$getEmployee->delete();
 
         ///Add new notifcation
-        $getUser=Auth::user();
+        $getUser=Auth::guard("StoreUsers")->user();
         $UserId=$getUser['id'];
         $NotifValue="Product ".$delEmployee["EnployeeName"] ." Deleted";
         $saveNotif=new StoreNotif([
@@ -789,8 +779,7 @@ $delEmployee=$getEmployee->delete();
         ]);
         $saveNotif->save();
 
-return redirect()->route('Employee',["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with(['err'=>0,'message'=>'Employee successfully Deleted']);
-
+  return redirect()->route('Employee',["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with(['err'=>0,'message'=>'EmployeeDeletedErr']);
 }
 
 
@@ -828,7 +817,7 @@ public function TablePost(Request $request,$StoreType,$StoreId)
     $saveTable->save();
 
     ///Add new notifcation
-    $getUser=Auth::user();
+    $getUser=Auth::guard("StoreUsers")->user();
     $UserId=$getUser['id'];
     $NotifValue="Table ".$saveTable["TableName"] ." Saved";
     $saveNotif=new StoreNotif([
@@ -839,7 +828,7 @@ public function TablePost(Request $request,$StoreType,$StoreId)
     $saveNotif->save();
     
 
-    return redirect()->route("Tables",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",["err"=>"0","message"=>"Table Created Successfully"]);
+    return redirect()->route("Tables",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",["err"=>"0","message"=>"TableCreated"]);
 }
 
 
@@ -857,16 +846,57 @@ $getTable=ResTable::find($TableId);
 
 $getTable->delete();
 
-return redirect()->route("Tables",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with(['err'=>'0','message'=>'Table Deleted successfully']);
+return redirect()->route("Tables",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with(['err'=>'0','message'=>'TableDeletedErr']);
+}
 
 
 
+public function UpdateTable(Request $request,$StoreType,$StoreId)
+{
+
+    // validate Inputs 
+    $validate=$request->validate([
+        "TableNameUpI"=>"required",
+        "TableStausUpI"=>"required",
+        "TableMaxSeatUpI"=>"required",
+        "TableId"=>"required"
+    ]);
+
+    //get TAble
+    $getTable=resTable::find($validate["TableId"]);
+
+    if(!empty($getTable)){
+    //update Table
+    
+     $UpdateTable=$getTable->update([
+         "TableName"=>$validate['TableNameUpI'],
+         "TableMaxSeat"=>$validate['TableMaxSeatUpI'],
+         "TableStatus"=>$validate['TableStausUpI'],
+     ]);
+     return redirect()->route("Tables",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>"0","message"=>"TableUpdatedErr"]);
+    }
+    else{
+        return redirect()->route("Tables",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>"1","message"=>"SW"]);
+    }
+}
+
+
+public function getTable(Request $request)
+{
+    //validate inputs
+    $validate=$request->validate([
+        "TableId"=>"required"
+    ]);
+    //get Table By ID
+    $getTable=resTable::find($validate['TableId']);
+    if(!empty($getTable)){
+       return  response()->json($getTable, 200);
+    }
 }
 
 
 public function KitchenMain($StoreType,$StoreId)
 {
- 
 
     //get All Orders where status is Kitchen
     $getOrders=StoreOrder::where([["OrderStoreId",'=',$StoreId],['OrderStatus','=','Kitchen']])->get();
@@ -937,21 +967,14 @@ public function DeliveryPost(Request $request,$StoreType,$StoreId)
         $UpdateOrder=$getOrder->update([
             'OrderStatus'=>'Done'
             ]);
-        
-        return redirect()->route("Delivery",["StoreType"=>$StoreType,"StoreId"=>$StoreId,])->with("err",['err'=>'0','message'=>'Order Updated Succssfuly']);
-
+        return redirect()->route("Delivery",["StoreType"=>$StoreType,"StoreId"=>$StoreId,])->with("err",['err'=>'0','message'=>'OrderUpdatedErr']);
     }
-
 }
 
 public function WaiterMain($StoreType,$StoreId)
 {
 
     $getDineInOrders=StoreOrder::where([["OrderStoreId","=",$StoreId],["OrderType","=","DineIn"],['OrderStatus',"=","ready"]])->get();
-
- 
-
-
   //  transform Cart
     $transFormOrder=$getDineInOrders->transform(function($order){ 
         $order->OrderCart=unserialize($order->OrderCart);
@@ -970,51 +993,56 @@ public function WaiterMain($StoreType,$StoreId)
 
 
 
-public function AddItem(Request $request)
+public function AddItem(Request $request,$StoreType,$StoreId)
 {
+
+    $CartName="cart".$StoreId;
     $getProduct=StoreProduct::find($request->get("id"));
 
-    $oldCart=Session::has("cart") ? Session::get("cart") : null;
+    $oldCart=Session::has($CartName) ? Session::get($CartName) : null;
 
-        $oldCart= Session::get('cart');
+        $oldCart= Session::get($CartName);
         $cart=new Item($oldCart);
         $cart->add($getProduct,$getProduct->id);
-        $addSes=$request->session()->put('cart', $cart);
-        return $addSes;
+        $addSes=$request->session()->put($CartName, $cart);
+        return $CartName;
 }
 
 
-public function DelItem(Request $request)
+public function DelItem(Request $request,$StoreType,$StoreId)
 {
+
+    $CartName="cart".$StoreId;
     $getProduct=StoreProduct::find($request->get("DelId"));
     $DelId=$getProduct->id;
-     $oldCart=Session::has("cart") ? Session::get("cart") : null;
-     $oldCart= Session::get('cart');
+     $oldCart=Session::has($CartName) ? Session::get($CartName) : null;
+     $oldCart= Session::get($CartName);
      $cart=new Item($oldCart);
      $cart->remove($DelId);
-     $DelSess=$request->session()->put('cart', $cart);
+     $DelSess=$request->session()->put($CartName, $cart);
      return $DelSess;
 
 }
 
-public function ReduceItem(Request $request)
+public function ReduceItem(Request $request,$StoreType,$StoreId)
 {
+    $CartName="cart".$StoreId;
     $getProduct=StoreProduct::find($request->get("id"));
     $reduceId=$getProduct->id;
-    $oldCart=Session::has("cart") ? Session::get("cart") : null;
-    $oldCart= Session::get('cart');
+    $oldCart=Session::has($CartName) ? Session::get($CartName) : null;
+    $oldCart= Session::get($CartName);
     $cart=new Item($oldCart);
     $cart->reduce($reduceId);
-    $reduceSess=$request->session()->put('cart', $cart);
+    $reduceSess=$request->session()->put($CartName, $cart);
     return $reduceSess;
     
 }
 
 
-public function getItems(Request $request){
+public function getItems(Request $request,$StoreType,$StoreId){
 
-
-$oldCart=Session::get('cart');
+$CartName="cart".$StoreId;
+$oldCart=Session::get($CartName);
 $getCart=new Item($oldCart);
 $products=$getCart->items;
 $totalQty=$getCart->totalQty;
@@ -1027,7 +1055,10 @@ $billView=view("Store.bill",['products'=>$products,'totalQty'=>$totalQty,"totalP
 
 public function CancelItems($StoreType,$StoreId)
 {
-    $DelCart=Session::has("cart") ? Session::forget("cart") :Session::forget("cart");
+
+    
+    $CartName="cart".$StoreId;
+    $DelCart=Session::has($CartName) ? Session::forget($CartName) :Session::forget($CartName);
 }
 
 
@@ -1090,19 +1121,25 @@ public function AddOrder(Request $request,$StoreType,$StoreId)
 
 };
 
+
+$CartName="cart".$StoreId;
+
 //get iTEMS
-   $oldCart=Session::get('cart');
+   $oldCart=Session::get($CartName);
    $getCart=new Item($oldCart);
 //
 
 
 //Order Payment
 
+if(empty($getCart->items)){
+    return redirect()->route("StorePos",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",["err"=>"1","message"=>"BillEmptyErr"]);
+}
 
 //save Order
 $saveOrder=new StoreOrder([
     "OrderType"=>$request->input('OrderTypeI'),
-    "OrderName"=>'generated',
+    "OrderName"=>uniqid(),
     "OrderStatus"=>"success",
     "OrderCart"=>serialize($getCart),
     "OrderPrice"=>$getCart->totalPrice,
@@ -1116,12 +1153,11 @@ $saveOrder->save();
 
 //forget Cart
 
-    $removeBill=Session::forget('cart');
+    $removeBill=Session::forget($CartName);
 //
 
-
 ///Add new notifcation
-$getUser=Auth::user();
+$getUser=Auth::guard("StoreUsers")->user();
 
 $UserId=$getUser['id'];
 $NotifValue="Order ".$saveOrder["OrderName"] ." Saved";
@@ -1136,15 +1172,13 @@ $saveNotif->save();
 
 //
 
-return redirect()->route("StorePos",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",["err"=>"0","message"=>'Order saved successfuly',"OrderId"=>$saveOrder['id']]);
-
-
+return redirect()->route("StorePos",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",["err"=>"0","message"=>'OrderSavedErr',"OrderId"=>$saveOrder['id']]);
  }
+
+
 
 public function PrintOrder($StoreType,$StoreId,$OrderId)
 {
-
-
     $getOrderPrint=StoreOrder::where([["OrderStoreId","=",$StoreId],["id","=",$OrderId]])->get();
 
   //  transform Cart
@@ -1154,10 +1188,7 @@ public function PrintOrder($StoreType,$StoreId,$OrderId)
       });
 
      return view("includes.PrintBill",["Order"=>$transFormOrder]);
-
-
-
-    
+   
 }
 
 
@@ -1165,7 +1196,9 @@ public function PrintOrder($StoreType,$StoreId,$OrderId)
 public function PayOrderStripe(Request $request,$StoreType,$StoreId)
 {
 
-    $oldCart=Session::get('cart');
+    
+    $CartName="cart".$StoreId;
+    $oldCart=Session::get($CartName);
     $getCart=new Item($oldCart);
         
 
@@ -1197,9 +1230,7 @@ public function PayOrderStripe(Request $request,$StoreType,$StoreId)
             $getTable->update([
                 "TableStatus"=>"InUse"
             ]);
-        
-        
-        
+                
             $OrderInf=['TableName'=>$validate['OrderTableNameI'],'TableId'=>$validate['OrderTableI']];
             
          }
@@ -1224,21 +1255,11 @@ public function PayOrderStripe(Request $request,$StoreType,$StoreId)
  
         
         //get iTEMS
-           $oldCart=Session::get('cart');
+           $oldCart=Session::get($CartName);
            $getCart=new Item($oldCart);
-        //
-        
-        // Set Order Status
-        // if($getCart->totalPrice == $validate['PaymentI']){
-        //     $orderStatus='success';
-        // }
-        // else{
-        //     $orderStatus='Done';
-        // }
-
-
+    
     //get Stripe Seceret Key
-    $getUser=Auth::user();
+    $getUser=Auth::guard("StoreUsers")->user();
     $userId=$getUser['id'];
 
 
@@ -1266,7 +1287,7 @@ public function PayOrderStripe(Request $request,$StoreType,$StoreId)
         // save Order
         $saveOrder=new StoreOrder([
             "OrderType"=>$request->input('OrderTypeI'),
-            "OrderName"=>'generated',
+            "OrderName"=>uniqid(),
             "OrderStatus"=>"success",
             "OrderCart"=>serialize($getCart),
             "OrderPrice"=>$getCart->totalPrice,
@@ -1280,19 +1301,26 @@ public function PayOrderStripe(Request $request,$StoreType,$StoreId)
         
         //forget Cart
         
-            $removeBill=Session::forget('cart');
+            $removeBill=Session::forget($CartName);
         //       
+
+        
 } 
 
 
 public function ToKitchen(Request $request,$StoreType,$StoreId)
 {
 
+    
 
+    $CartName="cart".$StoreId;
    //get iTEMS
-   $oldCart=Session::get('cart');
+   $oldCart=Session::get($CartName);
    $getCart=new Item($oldCart);
 
+   if(empty($getCart->items)){
+       return redirect()->route("StorePos",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",["err"=>"1","message"=>"BillEmptyErr"]);
+   }
    //get Order Type
 
 
@@ -1334,7 +1362,7 @@ public function ToKitchen(Request $request,$StoreType,$StoreId)
 
    $saveOrder=new StoreOrder([
     
-   'OrderName'=>"generated",
+   'OrderName'=>uniqid(),
    "OrderType"=>$request->input('OrderTypeI'),
    'OrderCart'=>serialize($getCart),
    'OrderStatus'=>"kitchen",
@@ -1346,11 +1374,11 @@ public function ToKitchen(Request $request,$StoreType,$StoreId)
    ]);
    $saveOrder->save();
 
-   
-    //remove orders From bill
-    $removeBill=Session::forget('cart');
 
-   return redirect()->route("StorePos",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",["err"=>"0","message"=>"Order Sended To Kitchen","OrderId"=>$saveOrder['id']]);
+    //remove orders From bill
+    $removeBill=Session::forget($CartName);
+
+   return redirect()->route("StorePos",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",["err"=>"0","message"=>"OrderSavedErr","OrderId"=>$saveOrder['id']]);
 }
 
 
@@ -1358,10 +1386,7 @@ public function ToKitchen(Request $request,$StoreType,$StoreId)
 public function WaitPay(Request $request)
 {
 
-
-
-    //Pay USing Stripe
-   
+    //Pay USing Stripe   
 
     //get Order
     $getOrder=StoreOrder::find($request->get("idWaiting"));
@@ -1373,7 +1398,7 @@ public function WaitPay(Request $request)
 
 if($request->get("PaymentWayI") =="CreditCard"){
     //get Stripe Seceret Key
-    $getUser=Auth::user();
+    $getUser=Auth::guard("StoreUsers")->user();
     $userId=$getUser['id'];
 
     $getKey=StorePayToken::where("UserId","=",$userId)->first();
@@ -1406,9 +1431,12 @@ if($request->get("OrderTypeIWaiting") =="DineIn"){
     //find Table And Update Status To Available
     $getTable=resTable::find($validate['TableIdWaiting']);
 
-    $getTable->update([
-        "TableStatus"=>"Available"
-    ]);
+      if(!empty($getTable)){
+        $getTable->update([
+            "TableStatus"=>"Available"
+        ]);
+      }
+
 } 
 
      $UpdateOrder=$getOrder->update([
@@ -1421,13 +1449,13 @@ if($request->get("OrderTypeIWaiting") =="DineIn"){
         return response(200);
      }
      else{
-         return redirect()->back()->with("err",['err'=>'0','message'=>"Order Updated Successfully","OrderId"=>$getOrder['id']]);
+         return redirect()->back()->with("err",['err'=>'0','message'=>"OrderUpdatedErr","OrderId"=>$getOrder['id']]);
      }
      
 
       }
       else{
-          return "order is Empty";
+          return redirect()->back()->with("err",['err'=>"1","message"=>"BillEmptyErr"]);
       }
 }
 
@@ -1446,20 +1474,14 @@ public function waiterPost(Request $request,$StoreType,$StoreId)
     $UpdateOrder=$getOrder->update([
         'OrderStatus'=>"Done"
     ]);
-    return redirect()->route("Waiter",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",['err'=>'0','message'=>'Order Updated Successfully']);
+    return redirect()->route("Waiter",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",['err'=>'0','message'=>'OrderUpdatedErr']);
     }
     else{
-        return redirect()->route("Waiter",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",['err'=>'1','message'=>'Somthing Wrong']);
+        return redirect()->route("Waiter",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",['err'=>'1','message'=>'SW']);
     }
-        
-
-    }
+  }
     
 }
-
-
-
-
 
 
 
@@ -1515,9 +1537,16 @@ if($request->input('OrderTypeI') == 'Delivery'){
     ]);
 };
 
+$CartName="cart".$StoreId;
 //get iTEMS
-   $oldCart=Session::get('cart');
+   $oldCart=Session::get($CartName);
    $getCart=new Item($oldCart);
+
+   
+   if(empty($getCart->items)){
+    return redirect()->route("StorePos",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",["err"=>"1","message"=>"BillEmptyErr"]);
+}
+//get
 //
 
 
@@ -1526,7 +1555,7 @@ if($request->input('OrderTypeI') == 'Delivery'){
 
 $saveOrder=new StoreOrder([
     "OrderType"=>$request->input('OrderTypeI'),
-    "OrderName"=>'generated',
+    "OrderName"=>uniqid(),
     "OrderStatus"=>"Done",
     "OrderCart"=>serialize($getCart),
     "OrderPrice"=>$getCart->totalPrice,
@@ -1542,8 +1571,7 @@ $saveOrder->save();
 
     $removeBill=Session::forget('cart');
 //
-return redirect()->route("StorePos",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with(["err"=>"0","message"=>"Order Sended To Hold"]);
-
+return redirect()->route("StorePos",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with(["err"=>"0","message"=>"OrderSavedErr"]);
 }
 
 
@@ -1571,7 +1599,7 @@ public function RepoAdd(Request $request,$StoreType,$StoreId)
 
 
 
-    $getUser=Auth::user();
+    $getUser=Auth::guard("StoreUsers")->user();
     //set Plan Limit
    
     if($getUser['PlanType'] =="1"){
@@ -1618,12 +1646,12 @@ public function RepoAdd(Request $request,$StoreType,$StoreId)
 
     $saveNotif->save();
 
-    return redirect()->route("Repository",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",['err'=>'0','message'=>"Repository Created Successfully"]);
+    return redirect()->route("Repository",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",['err'=>'0','message'=>"RepoCreatedErr"]);
 
 
     }
     else{
-        return redirect()->route("Repository",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",['err'=>'1','message'=>"Cant Add New Repository"]);
+        return redirect()->route("Repository",["StoreType"=>$StoreType,"StoreId"=>$StoreId])->with("err",['err'=>'1','message'=>"PlanRepoErr"]);
     }
 }
 
@@ -1652,7 +1680,7 @@ public function RepoProdAdd(Request $request,$StoreType,$StoreId)
      "RProdSource"=>$validate['RProdSourceI']
      ]);
      $saveProdRepo->save();
-     return redirect()->route("Repository",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'0','message'=>'Product Saved Successfully']);
+     return redirect()->route("Repository",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'0','message'=>'ProdCreatedRepoErr']);
 }
 
 
@@ -1669,10 +1697,10 @@ if(!empty($getRPRod)){
 
     $delRProd=$getRPRod->delete();
 
-    return redirect()->route("Repository",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'0','message'=>'Product Deleted Successfully']);
+    return redirect()->route("Repository",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'0','message'=>'ProdDeletedRepoErr']);
 }
 else{
-    return redirect()->route("Repository",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'1','message'=>'Product Not Found']);
+    return redirect()->route("Repository",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'1','message'=>'SW']);
  }
 }
 
@@ -1710,7 +1738,7 @@ public function DelRepo2(Request $request,$StoreType,$StoreId,$RepoId)
         $delRepo=$getRepo->delete();
 
         ///Add new notifcation
-        $getUser=Auth::user();
+        $getUser=Auth::guard("StoreUsers")->user();
         $UserId=$getUser['id'];
         $NotifValue="Repository ".$delRepo["RepoName"] ." Deleted";
         $saveNotif=new StoreNotif([
@@ -1722,7 +1750,7 @@ public function DelRepo2(Request $request,$StoreType,$StoreId,$RepoId)
 
 
 
-        return redirect()->route("DelRepo",["Repos"=>$getRepo,'StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'0','message'=>'Repo Deleted Succssefully']);
+        return redirect()->route("DelRepo",["Repos"=>$getRepo,'StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'0','message'=>'RepoDeletedErr']);
     }
     }
 
@@ -1773,7 +1801,7 @@ public function RprodUpPost(Request $request,$StoreType,$StoreId)
 
 
         ///Add new notifcation
-        $getUser=Auth::user();
+        $getUser=Auth::guard("StoreUsers")->user();
         $UserId=$getUser['id'];
         $NotifValue="Product ".$getProd["RProdName"] ." Updated On Repository";
         $saveNotif=new StoreNotif([
@@ -1784,11 +1812,87 @@ public function RprodUpPost(Request $request,$StoreType,$StoreId)
         $saveNotif->save();
 
 
-    return redirect()->route("Repository",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'0','message'=>'Product Updated Successfully']);
+    return redirect()->route("Repository",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'0','message'=>'ProdUpdatedErr']);
     }
     else{
-        return redirect()->route("Repository",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'1','message'=>'Somthing Wrong']);
+        return redirect()->route("Repository",['StoreType'=>$StoreType,'StoreId'=>$StoreId])->with("err",['err'=>'1','message'=>'SW']);
     }
+ }
 
+
+
+
+public function ToDelivery(Request $request,$StoreType,$StoreId)
+{
+    //vaidate Inputs
+    $validate=$request->validate([
+        "DeliveryEmpI"=>"required",
+        "DeliveryAddressI"=>"required",
+        "DeliveryPhoneI"=>"required",
+        "CasherId"=>"required"
+    ]);
+
+    $OrderInf=["DeliveryEmp"=>$validate['DeliveryEmpI'],"DeliveryAddress"=>$validate['DeliveryAddressI'],"DeliveryPhone"=>$validate['DeliveryPhoneI']];
+
+
+    //get Cart
+    $CartName="cart".$StoreId;
+    $oldCart=Session::get($CartName);
+    $getCart=new Item($oldCart);
+    $products=$getCart->items;
+    $totalQty=$getCart->totalQty;
+    $totalPrice=$getCart->totalPrice;
+  
+    if(!empty($getCart)){
+    //save Order
+    $saveOrder=new StoreOrder([
+        "OrderType"=>"Delivery",
+        "OrderName"=>uniqid(),
+        "OrderStatus"=>"ready",
+        "OrderCart"=>serialize($getCart),
+        "OrderPrice"=>$getCart->totalPrice,
+        "OrderBy"=>$validate['CasherId'],
+        "OrderPayment"=>0,
+        "OrderStoreId"=>$StoreId,
+        "OrderInf"=>serialize($OrderInf)
+      ]);
+
+    $saveOrder->save();
+
+   return redirect()->route("StorePos",['StoreType'=>$StoreType,"StoreId"=>$StoreId])->with("err",['err'=>"0","message"=>"OrderSavedErr","OrderId"=>$saveOrder['id']]);
+    }
+    else{
+        return redirect()->route("StorePos",['StoreType'=>$StoreType,"StoreId"=>$StoreId])->with("err",['err'=>"1","message"=>"BillEmptyErr"]);
+    }
 }
+
+
+// public function ReportsWeek($StoreType,$StoreId)
+// {
+
+//     //get Weekly Reports
+//     $getRports=StoreReport::where([['ReportStoreId',$StoreId],['ReportType','Weekly']])->get();
+
+//     return view("Store.ReportsWeek",['StoreType'=>$StoreType,"StoreId"=>$StoreId,"Reports"=>$getRports]);
+// }
+
+// public function ReportsMonth($StoreType,$StoreId)
+// {
+
+//     $getReports=StoreReport::where([['ReportStoreId',$StoreId],['ReportType','Monthly']])->get()->load("getFuck");
+    
+//     return $getReports;
+
+
+
+//     //return view("Store.ReportsMonth",['StoreType'=>$StoreType,'StoreId'=>$StoreId,'Reports'=>$getReports]);
+
+
+// }
+
+
+
+
+
+
 }

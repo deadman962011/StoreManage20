@@ -2,7 +2,7 @@
 
 @section("title")
 
-<title>Set New Password</title>
+<title>{{ trans('lang.RestPassView') }}</title>
 @endsection
 
 
@@ -16,17 +16,17 @@
             <form  method="post" class="form-horizontal">
              <div class="form-group">
               <div class="col-sm-10 col-sm-offset-1">
-                 <input type="password" name="NewPass" class="form-control" placeholder="Put New Password Here" required>
+                 <input type="password" name="NewPass" class="form-control" placeholder="{{ trans('lang.FormRestPass1') }}" required>
               </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-10 col-sm-offset-1">
-                   <input type="password" name="NewPass_confirmation" class="form-control" placeholder="Repeat New Password Here" required>
+                   <input type="password" name="NewPass_confirmation" class="form-control" placeholder="{{ trans('lang.FormRestPass2') }}" required>
                 </div>
               </div>
             <div class="form-group">
              <div class="col-sm-8 col-sm-offset-2">
-                 <input type="submit" value="Save New Password" class="btn btn-primary btn-block">
+                 <input type="submit" value="{{ trans('lang.formRestPassSubmit') }}" class="btn btn-primary btn-block">
              </div>
             </div>
 

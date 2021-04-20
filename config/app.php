@@ -15,6 +15,16 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+
+    "StripeApiKey"=>env("STRIPEPUB","NoApi"),
+
+
+    "StripeSecKey"=>env("STRIPESEC"),
+
+    "PayPalId"=> env('PAYPAL_CLIENT_ID'),
+
+    "PayPalSeceret"=> env('PAYPAL_SECERET'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

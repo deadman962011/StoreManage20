@@ -1,6 +1,12 @@
 @extends('layout.nativeBase')
 
 
+@section('title')
+    <title>{{ trans('lang.PosViewTitle') }}</title>
+@endsection
+
+
+
 @section('style')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
@@ -10,59 +16,51 @@
 
 <div class="container">
     <div class="row">
-
-
-     
       <div class="Btns"> 
-        <a href='{{ route("StoreMain",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">Dashboard</a>
-        <a href='{{ route("Delivery",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">Delivery</a>
-        <a href='{{ route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">Products</a>
-        <a href='{{ route("Catigories",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">Catigories</a>
+        <a href='{{ route("StoreMain",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">{{ trans('lang.DashboardViewTitle') }}</a>
+        <a href='{{ route("Delivery",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">{{ trans('lang.SideNavDelivery') }}</a>
+        <a href='{{ route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">{{ trans('lang.SideNavProds') }}</a>
+        <a href='{{ route("Catigories",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">{{ trans('lang.SideNavCats') }}</a>
         
-        <button data-toggle="modal" data-target="#WaitingPay" class="btn btn-default btn-lg">Waiting For Payment</button>
+        <button data-toggle="modal" data-target="#WaitingPay" class="btn btn-default btn-lg">{{ trans('lang.WatingPaymentBut') }}</button>
       </div>
       @if (!empty(session('err')))
       @if (session('err')['err'] == "0")
       <div id='StoreAlert' class="alert alert-success col-sm-6 col-sm-offset-3">
-      <strong>{{ session('err')['message'] }}  <a href="{{ session('err')['OrderId'] }}">Click Here To Print Bill</a> </strong>
+      <strong>{{ trans("lang.".session('err')['message'])  }}  <a href="{{ route("PrintOrder",["StoreType"=>$StoreType,"StoreId"=>$StoreId,"OrderId"=>session('err')['OrderId']]) }}">Click Here To Print Bill</a> </strong>
       </div>
       @endif
       @if (session('err')['err'] == "1")
       <div id='StoreAlert' class="alert alert-danger col-sm-6 col-sm-offset-3" >
-      <strong>{{ session('err')['message'] }}</strong>
+      <strong>{{ trans("lang.".session('err')['message'])  }}</strong>
       </div>
       @endif      
       @endif
-
-
         <div class="col-sm-6">
-          <div class="Dashboard" style='overflow-y: auto;height: 520px;'>
-
+          <div class="Dashboard PosPanel" style='overflow-y: auto;'>
             <div class="btn-group btn-group-justified " style="margin: 8px;width:auto;">
-                <div class="btn-group"><button data-toggle="modal" data-target="#PayModal"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-usd"></span>  pay</button></div>
-                <div class="btn-group"><button data-toggle="modal" data-target="#HoldModal"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-hourglass"></span>  Hold</button></div>
-                <div class="btn-group"><button id="cancelOrder"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-trash"></span>  cancel</button></div>
+                <div class="btn-group"><button data-toggle="modal" data-target="#PayModal"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-usd"></span>{{ trans('lang.PospayBut') }}</button></div>
+                <div class="btn-group"><button data-toggle="modal" data-target="#HoldModal"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-hourglass"></span>{{ trans('lang.PosWaitingBut') }}</button></div>
+                <div class="btn-group"><button data-toggle="modal" data-target="#DeliveryModal"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-send"></span>{{ trans('lang.PosDelivery') }}</button></div>
+                <div class="btn-group"><button id="cancelOrder"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-trash"></span>{{ trans('lang.PosCancelBut') }}</button></div>
               </div>
     
              <table class="table" style="">
                  <thead>
-                         <th>item</th>
-                         <th>price</th>
-                         <th>Quantitiy</th>
-                         <th>Total Price</th>
+                         <th>{{ trans('lang.billProdName') }}</th>
+                         <th>{{ trans('lang.billPrice') }}</th>
+                         <th>{{ trans('lang.billQuant') }}</th>
+                         <th>{{ trans('lang.billTotalPrice') }}</th>
                          <th>#</th>
-                     
                  </thead>
                  <tbody  class="test">
-     
                  </tbody>
              </table>
              <br>
         </div>
     </div>
         <div class="col-sm-6">
-            <div class="Dashboard" style='padding:10px'>
-                
+            <div class="Dashboard PosPanel" style='padding:10px'>
                     <div class="tabbable">
                         <ul class="nav nav-tabs">
                           <li class='active'><a href="#all" data-toggle="tab">All</a></li>
@@ -84,7 +82,6 @@
                              </button>
                             </div>
                            </div>
-                           
                           @endforeach
                          </div>
                          @foreach ($Catigories as $PbyC)
@@ -107,30 +104,10 @@
                          @endforeach
                         </div>
                    </div>                    
-          
             </div>
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -158,18 +135,6 @@
                 <img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/delivery.png" alt="">
               </label> 
             </div>
-      
-                {{-- <label for="OrderType"  class="OrderLabel">
-                  <input type="radio" name="OrderTypeI"  value='TakeAway' data-toggle="collapse" data-target="#TakeAwayCollapse"><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/takeaway.png" alt=""> 
-                </label>
-                <label for="OrderType"  class="OrderLabel">
-                  <input type="radio" name="OrderTypeI" value='DineIn' data-toggle="collapse" data-target="#DineInCollapse"><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/dinein.png" alt="">
-                </label>
-                <label for="OrderType"  class="OrderLabel">
-                  <input type="radio" name="OrderTypeI" value='Delivery' data-toggle="collapse" data-target="#DeliveryCollapse" ><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/delivery.png" alt="">
-                </label>  --}}
-                
-                
                 <div id="PayCollapse" class="collapse"></div>
                 <div id="DeliveryCollapse" class="collapse">
                   <div class="form-group">
@@ -259,6 +224,63 @@
   </div>
 
   {{-- Pay modal End --}}
+
+
+
+<!-- Delivery Order Modal -->
+  <!-- Modal -->
+  <div class="modal fade" id="DeliveryModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Delivery Modal</h4>
+        </div>
+        <div class="modal-body">
+         <form action="{{ route("ToDelivery",['StoreType'=>$StoreType,'StoreId'=>$StoreId]) }}" method="post" class="form-horizontal">
+          <div class="form-group">
+            <div class="col-sm-3"><label for="DeliveryEmpI" class="form-label"> Delivery Employee:</label></div>
+            <div class="col-sm-6"><select name="DeliveryEmpI" class="form-control">
+              @foreach ($Employee as $employee)
+               <option value="{{$employee['id']}}">{{ $employee['EmployeeName'] }}</option>                  
+              @endforeach
+            </select></div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-3"><label for="DeliveryAddressI" class="form-label"> Delivery Address:</label></div>
+            <div class="col-sm-6"><input type="text" name="DeliveryAddressI"  class="form-control"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-3"><label for="DeliveryPhoneI" class="form-label"> Delivery Phone:</label></div>
+            <div class="col-sm-6"><input name='DeliveryPhoneI' type="text" class="form-control"></div>
+          </div> 
+          {{ csrf_field() }}
+        </div>
+        <div class="modal-footer">
+          <div class="col-sm-4">
+            <select class='form-control' name="CasherId">
+              @foreach ($getCasher as $Casher)
+               <option value="{{$Casher['EmployeeName']}}">{{$Casher['EmployeeName']}}</option>        
+              @endforeach
+
+             </select>
+          </div>
+
+        <input type="submit" value="Add To Delivery" class="btn btn-primary">
+        </form>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+<!--  End Delivery Order Modal -->
+
+
 
 
 {{-- Hold modal --}}
@@ -356,26 +378,29 @@
             
          <div id="ready{{ $orderD['id']}}" class="tab-pane fade in ">
      
-          <h3 class='text-center'>Order Details</h3>
-          <div class="OrderDetails"> 
-           <h3>Casher:    <span>{{ $orderD['OrderBy'] }}</span>   Date:  <span>{{ $orderD['created_at']}}</span></h3> 
-           <h3>Code:   <span>{{ $orderD['OrderName']}}</span>   OrderType:    <span>{{$orderD['OrderType']}}</span></h3>
-           <h3>Order Amount:   <span>{{ $orderD['OrderPrice']}}</span></h3>
+          <h3 class='text-center'>{{ trans('lang.WaitngModalTitleDetails') }}</h3>
+           @if (app()->getLocale() =="en")
+            <div class="OrderDetails" style='direction:rtl'> 
+           @else
+            <div class="OrderDetails" >
+           @endif
+           <h3>{{ trans('lang.WaitngModalCahsherTitle') }}    <span>{{ $orderD['OrderBy'] }}</span>   {{ trans('lang.WaitngModalLabelDate') }}  <span>{{ $orderD['created_at']}}</span>{{ trans('lang.WaitngModalLabelAmount') }}   <span>{{ $orderD['OrderPrice']}}</span></h3> 
+           <h3>{{ trans('lang.WaitngModalLabelCode') }}   <span>{{ $orderD['OrderName']}}</span>   {{ trans('lang.WaitngModalLabelOrderType') }}    <span>{{$orderD['OrderType']}}</span></h3>
           @if ($orderD['OrderType'] == "Delivery")
-          <h3> Delivery Phone:   <span>{{$orderD['OrderInf']['DeliveryPhone']}}</span>  </h3>
-          <h3>Delivery Address:  <span>{{$orderD['OrderInf']['DeliveryAddress']}}</span>  </h3>
+          <h3>  {{ trans('lang.FormDeliveryPhone') }}   <span>{{$orderD['OrderInf']['DeliveryPhone']}}</span>  </h3>
+          <h3> {{ trans('lang.FormDeliveryAddress') }}  <span>{{$orderD['OrderInf']['DeliveryAddress']}}</span>  </h3>
          
           @endif
           </div>
-          <h3 class='text-center'>Order Products</h3>
+          <h3 class='text-center'>{{ trans('lang.WaitngModalTitleProd') }}</h3>
           <div class="orderProducts">
             <table class='table'>
               <thead>
                 <tr>
-                  <th>Product Name</th>
-                  <th>ProductPrice</th>
-                  <th>Product Quantity</th>
-                  <th>Total Price</th>
+                  <th>{{ trans('lang.billProdName') }}</th>
+                  <th>{{ trans('lang.billPrice') }}</th>
+                  <th>{{ trans('lang.billQuant') }}</th>
+                  <th>{{ trans('lang.billTotalPrice') }}</th>
                 </tr>
               </thead>
 
@@ -394,11 +419,11 @@
           </div>
 
            <form action="{{ route("WaitPay",["StoreType"=>$StoreType,"StoreId"=>$StoreId])}}" method="post" class="WaitingForm  form-horizontal">
-            <h4 class="text-center">Payment Way</h4>
+            <h4 class="text-center">{{ trans('lang.PayFormPayWay') }}</h4>
                             {{-- Payment Form --}}
   
                             <div class="form-group">
-                              <div class="col-sm-3"><label for="PaymentWayI" class="form-label">Payment Way</label></div>
+                              <div class="col-sm-3"><label for="PaymentWayI" class="form-label">{{ trans('lang.PayFormPayWay') }}</label></div>
                               <div class="col-sm-8">
                                 <div class="btn-group btn-group">
                                   <label for="paymentWayI" class="btn btn-default"> <input type="radio" name='PaymentWayIWait' value='Cash' data-toggle="collapse" data-target="#CashCollapseWaiting{{$orderD['id']}}" >Cash</label>
@@ -407,7 +432,11 @@
                                   @else
                                   <label for='PaymentWayI' class="btn btn-default"> <input type="radio" name='PaymentWayIWait' class='WatingCC' value='CreditCard' data-toggle="collapse" data-target="#CreditCardCollapseWaiting{{$orderD['id']}}" disabled >Credit Card</label>
                                   @endif
-                                  <label for='PaymentWayI' class="btn btn-default"> <input type="radio" name='PaymentWayIWait' value='CashOnDelivery' data-toggle="collapse" data-target="#CashOnDeliveryWaiting{{$orderD['id']}}" disabled>Cash on Delivery</label>
+                                  @if($orderD["OrderType"] =="Delivery")
+                                    <label for='PaymentWayI' class="btn btn-default"> <input type="radio" name='PaymentWayIWait' value='CashOnDelivery' data-toggle="collapse" data-target="#CashOnDeliveryWaiting{{$orderD['id']}}">Cash on Delivery</label>
+                                    @else
+                                    <label for='PaymentWayI' class="btn btn-default"> <input type="radio" name='PaymentWayIWait' value='CashOnDelivery' data-toggle="collapse" data-target="#CashOnDeliveryWaiting{{$orderD['id']}}" disabled>Cash on Delivery</label>
+                                  @endif                             
                                 </div>
                               </div>
                             </div>
@@ -418,21 +447,21 @@
                             @if(!empty($ApiKey))
                             <div id="CreditCardCollapseWaiting{{$orderD['id']}}" class="collapse">                            
                               <div class="form-group">
-                              <div class="col-sm-3"><label for="cardNumber">Card Number</label></div>
+                              <div class="col-sm-3"><label for="cardNumber">{{ trans('lang.PayFormCN') }}</label></div>
                               <div class="col-sm-9"><input type="tel" class="form-control" name="cardNumber" placeholder="Valid Card Number" autocomplete="cc-number" required autofocus /></div>
                             </div>
                     
                             <div class="form-group">
-                              <div class='col-sm-4'><label for="cardExpiry"><span class="hidden-xs">Expiration</span><span class="visible-xs-inline">EXP</span> DATE</label> </div>
+                              <div class='col-sm-4'><label for="cardExpiry"><span class="hidden-xs">{{ trans('lang.PayFormExp') }}</span><span class="visible-xs-inline">EXP</span> DATE</label> </div>
                               <div class='col-sm-8'><input  type="tel"   class="form-control"  name="cardExpiry" placeholder="MM / YY" autocomplete="cc-exp" required /></div>
                             </div>
                     
                             <div class="form-group">
-                              <div class="col-sm-3"><label for="cardCVC">Cvc Code</label></div>
+                              <div class="col-sm-3"><label for="cardCVC">{{ trans('lang.PayFormCVC') }}</label></div>
                               <div class='col-sm-9' > <input type="tel" class="form-control"name="cardCVC"placeholder="CVC"autocomplete="cc-csc"required /> </div>
                             </div> 
                     
-                            <button class="subscribe btn btn-primary btn-block" type="button">Credit Card Payment Submit</button>
+                            <button class="subscribe btn btn-primary btn-block" type="button">{{ trans('lang.PayFormCCSubmit') }}</button>
                     
                             <div class="row" style="display:none;">
                               <div class="col-xs-12">
@@ -457,11 +486,7 @@
           @endif
         </div>
       </div>
-
       </div>
-
-
-
     </div>
   </div>
 </div>
@@ -580,11 +605,12 @@ $.post({
 </script>
 
 <script src="https://js.stripe.com/v2/"></script>
-<script type="text/javascript" src="http://127.0.0.1/cdn/jquery/jquery.validate.min.js"></script>
-<script type="text/javascript" src="http://127.0.0.1/cdn/jquery/jquery.payment.min.js"></script>
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/1.2.3/jquery.payment.min.js"></script>
 
 <script>
+
+
 $("input[name='OrderTypeI']").change(function(){
   var OrderTypex=$("input[name='OrderTypeI']:checked").val();
 
@@ -596,6 +622,7 @@ $("input[name='OrderTypeI']").change(function(){
     $("input[name='PaymentWayI'][value='CashOnDelivery']").prop("disabled",true);
   }
 })
+
 
 
 

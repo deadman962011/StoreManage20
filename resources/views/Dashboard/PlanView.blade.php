@@ -1,8 +1,15 @@
 @extends('layout.nativeBase')
 
+
+@section('title')
+    <title>{{ trans('lang.PlanViewTitle') }}</title>
+@endsection 
+
 @section('style')
  <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ url("inc/css/planStyling.css") }}">
+
+    
 
     <style>
      
@@ -34,22 +41,25 @@
 @section('content')
 <!-- MultiStep Form -->
 
-<div class="col-sm-12">
+<div class="col-sm-12 col-xs-12 col-md-12">
     <form id="msform" class='form-horizontal' method="post">
-        <!-- progressbar -->
+     <!-- progressbar -->
         <ul id="progressbar">
-            <li  class='active' style='width:50%'>اختر الخطة المناسبة لاحتياجاتك</li>
-            <li style='width:50%'>اختر طريقة الدفع</li>
+            <li  class='active' style='width:50%'>{{ trans("lang.PlanViewTitle")}}</li>
+            <li style='width:50%'>{{ trans("lang.PayFormPayWay")}}</li>
         </ul>
         <!-- fieldsets -->
         <fieldset>
+
+                
+
          
 <div id="price">
 <!--price tab-->
 <div class="plan">
   <div class="plan-inner">
     <div class="entry-title">
-      <h3>الخطة الاساسية</h3>
+      <h3>{{ trans('lang.PlanName1') }}</h3>
       <div class="price">$30
       </div>
     </div>
@@ -64,9 +74,9 @@
       </ul>
     </div>
     <div class="planFooter">
-     <label class='btn btn-primary' id='PlanBut1'> 
+     <label  style='background-color:#53CFE9;border-color:#20bada;' class='btn btn-primary' id='PlanBut1'> 
        <input value='1' type="radio" name="PlanType" >
-       <div class="test"></div> اشتراك
+       <div class="test"></div> {{ trans("lang.Subscribe") }}
      </label>
     </div>
   </div>
@@ -76,7 +86,7 @@
 <div class="plan basic">
   <div class="plan-inner">
     <div class="entry-title">
-      <h3>الخطة المدعومة</h3>
+      <h3>{{ trans('lang.PlanName2') }}</h3>
       <div class="price">$60
       </div>
     </div>
@@ -92,9 +102,9 @@
     </div>
     <div class="planFooter">
    
-        <label class='btn btn-primary' id='PlanBut2'> 
+        <label style='background-color:#75DDD9;border-color:#44CBC6;' class='btn btn-primary' id='PlanBut2'> 
           <input value='2' type="radio" name="PlanType" >
-          <div class="test"></div> اشتراك
+          <div class="test"></div> {{ trans('lang.Subscribe') }}
         </label>
      
     </div>
@@ -105,7 +115,7 @@
 <div class="plan standard">
   <div class="plan-inner">
     <div class="entry-title">
-      <h3>الخطة الشاملة</h3>
+      <h3>{{ trans('lang.PlanName3') }}</h3>
       <div class="price">$120
       </div>
     </div>
@@ -120,9 +130,9 @@
       </ul>
     </div>
     <div class="planFooter">
-      <label class='btn btn-primary' id='PlanBut3'> 
+      <label style='background-color:#4484c1;border-color:#3772aa;' class='btn btn-primary' id='PlanBut3'> 
         <input value='3' type="radio" name="PlanType" >
-        <div class="test"></div> اشتراك
+        <div class="test"></div> {{ trans('lang.Subscribe') }}
       </label>
     </div>
 
@@ -136,7 +146,7 @@
 <div class="plan ultimite">
   <div class="plan-inner">
     <div class="entry-title">
-      <h3>الخطة الكاملة</h3>
+      <h3>{{ trans('lang.PlanName4') }}</h3>
       <div class="price">$250
       </div>
     </div>
@@ -151,27 +161,25 @@
       </ul>
     </div>
     <div class="planFooter">
-      <label class='btn btn-primary' id='PlanBut'> 
+      <label style='background-color:#F75C70;border-color:#DD4B5E;' class='btn btn-primary' id='PlanBut'> 
         <input value='4' type="radio" name="PlanType" >
-        <div class="test"></div> اشتراك
+        <div class="test"></div> {{ trans('lang.Subscribe') }}
       </label>
     </div>
   </div>
+</div> 
 </div>
+
 <!-- end of price tab-->
-</div>
-
-            <input type="button" name="next" class="next action-button btn btn-primary" value="Next"/>  
-
+            <input type="button" name="next" class="next action-button btn btn-primary" value="{{ trans("lang.Next")}}"/> 
         </fieldset>
-
         <fieldset>
 
-            <h2 class="fs-title">طريقة الدفع</h2>
-            <h3 class="fs-subtitle">Your presence on thsdafsdfe social network</h3>
+            <h2 class="fs-title">{{ trans('lang.PayFormPayWay') }}</h2>
+            
              <div class="btn-group">
-              <label class="btn btn-default"><input type="radio" name="PayWayI"  data-toggle="collapse" data-target="#PayWayPayPal">Pay With PayPal</label>
-              <label class="btn btn-default"><input type="radio" name="PayWayI"  data-toggle="collapse" data-target="#PayWayCC">Pay With Credit Card</label>
+              <label class="btn btn-default"><input type="radio" name="PayWayI"  data-toggle="collapse" data-target="#PayWayPayPal">{{ trans("lang.PayPayPal") }}</label>
+              <label class="btn btn-default"><input type="radio" name="PayWayI"  data-toggle="collapse" data-target="#PayWayCC">{{ trans('lang.PayFormCCSubmit') }}</label>
             </div>
             <br>
             <br>
@@ -186,16 +194,16 @@
           <div id="PayWayCC" class="collapse"> 
                          <!-- CREDIT CARD FORM STARTS HERE -->
                          <div class="form-group">
-                          <div class="col-sm-3"><label for="cardNumber">CARD NUMBER</label></div>
-                          <div class="col-sm-5"><input type="tel" class="form-control" name="cardNumber" placeholder="Valid Card Number" autocomplete="cc-number" required autofocus /></div>
+                          <div class="col-sm-3"><label for="cardNumber">{{ trans('lang.PayFormCN') }}</label></div>
+                          <div class="col-sm-5"><input type="tel" class="form-control" name="cardNumber" placeholder="{{ trans('lang.PayFormCN') }}" autocomplete="cc-number" required autofocus /></div>
                         </div>                                            
                         <div class="form-group">
-                         <div class='col-sm-3'><label for="cardExpiry"><span class="hidden-xs">EXPIRATION</span><span class="visible-xs-inline">EXP</span> DATE</label> </div>
+                         <div class='col-sm-3'><label for="cardExpiry"><span class="hidden-xs">{{ trans('lang.PayFormExp') }}</span><span class="visible-xs-inline"></span></label> </div>
                          <div class='col-sm-3'><input  type="tel"   class="form-control"  name="cardExpiry" placeholder="MM / YY" autocomplete="cc-exp" required /></div>
                         </div>
                         <div class="form-group">
-                          <div class="col-sm-3"><label for="cardCVC">CV CODE</label></div>
-                          <div class='col-sm-4' > <input type="tel" class="form-control"name="cardCVC"placeholder="CVC"autocomplete="cc-csc"required /> </div>
+                          <div class="col-sm-3"><label for="cardCVC">{{ trans("lang.PayFormCVC") }}</label></div>
+                          <div class='col-sm-4' > <input type="tel" class="form-control"name="cardCVC"placeholder="{{ trans("lang.PayFormCVC") }}"autocomplete="cc-csc"required /> </div>
                         </div>
                
                 <div class="row" style="display:none;">
@@ -208,9 +216,9 @@
   
     <!-- CREDIT CARD FORM ENDS HERE -->
          
-    <br>
-    <br>
-          <input type="button" name="previous" class="previous btn btn-danger" value="Previous"/>
+      <br>
+      <br>
+          <input type="button" name="previous" class="previous btn btn-danger" value="{{ trans('lang.Previous')}}"/>
       </fieldset>
       {{csrf_field()}}
   </form>
@@ -221,17 +229,31 @@
 
 
 @section('script')
+
+<script>
+      
+$(".collapse").on("show.bs.collapse",function(){
+$(".collapse.in").each(function(){
+  $(this).collapse("hide");
+})
+})
+</script>
+
+
 <script
   src="https://code.jquery.com/jquery-3.4.1.min.js"
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
   crossorigin="anonymous"></script>
-
+  <script src="{{ url("inc/js/multiStepForm.js") }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
-<script src="{{ url("inc/js/multiStepForm.js") }}"></script>
 <script src="https://js.stripe.com/v2/"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/1.2.3/jquery.payment.min.js"></script>
 <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+
+
+
 @include('includes.localJs')
  
 

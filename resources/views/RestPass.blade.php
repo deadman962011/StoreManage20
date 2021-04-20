@@ -2,7 +2,7 @@
 
 @section("title")
 
-<title>Rest Password</title>
+<title>{{ trans('lang.RestPassView') }}</title>
 @endsection
 
 
@@ -13,10 +13,14 @@
 <div class="row">
     <div class="col-sm-6 col-sm-offset-3">
         <div class="RestPass">
+            <h4 class="text-center">{{ trans('lang.RestPass') }}</h4>
+            <br>
+
             <form action="" method="post" class="form-horizontal">
              <div class="form-group">
               <div class="col-sm-10 col-sm-offset-1">
-                 <input type="email" name="RestEmail" class="form-control" placeholder="Put Your Email Here" required>
+                 <p>{{ trans('lang.RestPassDesc') }}</p>
+                 <input type="email" name="RestEmail" class="form-control" placeholder="{{ trans('lang.FormPlaceHolderEmail') }}" required>
               </div>
             </div>
             <div class="form-group">

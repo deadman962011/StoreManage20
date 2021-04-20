@@ -1,8 +1,15 @@
 @extends('layout.nativeBase')
 
 
+
+@section('title')
+    <title>{{ trans('lang.SalesViewTitle') }}</title>
+@endsection
+
+
 @section('style')
-<link rel="stylesheet" href="http://127.0.0.1/cdn/store-manage/dataTables.bootstrap.min.js">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css">
+<link rel="stylesheet" href="http://127.0.0.1/cdn/datatables-responsive/dataTables.responsive.css">
 @endsection
 
 

@@ -14,8 +14,7 @@
 
 Route::get('/',['uses'=>'Controller@mainGetR']);
 
-Route::get('/{lang}',["uses"=>"Controller@mainGet",
-                        "as"=>"main"]);
+Route::get('/{lang}',["uses"=>"Controller@mainGet","as"=>"main"]);
 
 
 
@@ -38,8 +37,6 @@ Route::post("/RestPass",['uses'=>"UsersController@RestPassPost","as"=>"RestPassP
 Route::get("/RestPass/{token}",["uses"=>'UsersController@RestPassNew',"as"=>"RestPassNewG"]);
 
 Route::post("/RestPass/{token}",["uses"=>'UsersController@RestPassNewP',"as"=>"RestPassNewP"]);
-
-
 
 // this route for ajax sign up form queries
 
@@ -100,6 +97,8 @@ Route::group(['middleware'=>['auth:StoreUsers']],function(){
             Route::post("HoldOrder",['uses'=>'StoresController@HoldOrder','as'=>'HoldOrder']);
 
             Route::post('WaitingPay',['uses'=>"StoresController@WaitPay",'as'=>"WaitPay"]);
+
+            Route::post("ToDelivery",['uses'=>"StoresController@ToDelivery","as"=>"ToDelivery"]);
             
             Route::get("PrintOrder/{OrderId}",['uses'=>"StoresController@PrintOrder","as"=>"PrintOrder"]);
         });
@@ -148,6 +147,10 @@ Route::group(['middleware'=>['auth:StoreUsers']],function(){
 
         Route::get("DelTable/{TableId}",['uses'=>"StoresController@DelTable","as"=>"DelTable"]);
 
+        Route::post("getTable",['uses'=>"StoresController@getTable",'as'=>"getTable"]);
+
+        Route::post("UpdateTable",['uses'=>"StoresController@UpdateTable","as"=>"UpdateTable"]);
+
         Route::get("kitchen",['uses'=>"StoresController@KitchenMain",'as'=>"Kitchen"]);
 
         Route::post('OrderKitchen',['uses'=>"StoresController@OrderKitchen","as"=>"OrderKitchen"]);
@@ -161,6 +164,12 @@ Route::group(['middleware'=>['auth:StoreUsers']],function(){
         Route::post('Waiter',['uses'=>"StoresController@WaiterPost","as"=>"waiterPost"]);
 
         Route::get("Sales",['uses'=>"StoresController@SalesGet","as"=>"Sales"]);
+
+        // Route::get("ReportsWeek",['uses'=>"StoresController@ReportsWeek","as"=>"ReportsWeek"]);
+
+        // Route::get("ReportsMonth",["uses"=>"StoresController@ReportsMonth","as"=>"ReportsMonth"]);
+
+
        });
     });
 

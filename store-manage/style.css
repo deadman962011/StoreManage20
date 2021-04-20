@@ -1,0 +1,496 @@
+body{
+
+background-color:rgb(231, 231, 231);
+
+}
+
+#StoreAlert{
+  z-index: 1;
+  position: absolute;
+  text-align:center;
+}
+
+.SignIn{
+
+  position: relative;
+  background-color: white;
+  top: 120px;
+  height: 300px;
+  background: white;
+  border: 0 none;
+  border-radius: 0px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.4);
+  padding: 20px 15px;
+  box-sizing: border-box;
+
+}
+
+.SignIn h4 {
+
+  text-align: center;
+  font-weight: bold;
+}
+
+
+.RestPass{
+
+  position: relative;
+  background-color: white;
+  top: 120px;
+  height: 300px;
+  background: white;
+  border: 0 none;
+  border-radius: 0px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.4);
+  padding: 20px 15px;
+  box-sizing: border-box;
+
+}
+
+.Dashboard{
+
+background-color: white;
+margin: 25px 12px 25px 12px;
+padding:20px;
+border-radius: 4px;
+min-height: 93vh;
+position: relative;
+
+}
+
+
+.Dashboard2{
+  margin: 25px 0px 25px 0px;
+  padding:20px;
+  border-radius: 4px;
+  min-height: 93vh;
+
+}
+
+
+
+.StoreContent{
+  width: 78%;
+}
+
+.showTables{
+
+  border: 1px solid blue;
+  height:250px;
+  border-radius: 10px;
+  overflow-y: auto;
+
+}
+
+.resTable{
+  text-align: center;
+    display: inline-block;
+
+    border-radius: 10px;
+    margin: 10px;
+    padding: 8px;
+}
+
+
+
+.OrderTabs{
+  min-height: 600px;
+}
+
+
+.OrderTabs ul{
+  height: 640px;
+  overflow-y: scroll;
+  display: inline-block;
+  min-width: 320px;
+
+  list-style: none;
+}
+
+
+.OrderTabs li{
+  border-top:1px #d4d4d4 solid;
+  border-bottom: 1px #d4d4d4 solid;
+  padding: 10px;
+
+
+}
+
+
+.OrderTabs li.active {
+  cursor: default;
+  background-color:#d4d4d4;
+}
+
+
+
+.OrderTabsCont{
+  width: 62%;
+  height: 640px;
+  overflow-y: scroll;
+  padding: 16px;
+  position: absolute;
+  display: inline-block;
+}
+
+.OrderTypeSet label input[type=radio] { 
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+
+}
+
+.OrderTypeSet label input[type=radio] +img { 
+  cursor: pointer;
+}
+
+.OrderTypeSet input[type=radio]:checked + img {
+  outline: 2px solid #f00;
+
+}
+
+
+.OrderDetails h3{
+  padding: 12px;
+  font-weight: bold;
+  display: inline-table;
+
+}
+
+.OrderDetails h3 span {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+
+
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+.wrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+#sidebar {
+  min-width: 230px;
+  max-width: 230px;
+  background: #0e1f2d;
+  color: #fff;
+  transition: all 0.3s;
+
+}
+
+#sidebar.active {
+  margin-left: -250px;
+}
+
+#sidebar .sidebar-header {
+  padding: 10px;
+  background: #0e1f2d;
+}
+
+#sidebar ul.components {
+  padding: 20px 0;
+  
+}
+
+#sidebar ul p {
+  color: #fff;
+  padding: 10px;
+}
+
+#sidebar ul li a {
+  padding: 10px;
+  font-size: 1.1em;
+  display: block;
+  color: rgb(190, 190, 190);
+  text-decoration: none;
+  font-weight: 600;
+ 
+}
+#sidebar ul li a:hover {
+  color:white;
+  background:#0e2335;
+  
+}
+
+
+#sidebar ul li.active > a, a[aria-expanded="true"] {
+  color: white;
+  background: #0e2335;
+
+}
+
+
+#sidebar ul li a[data-toggle="collapse"] {
+  position: relative;
+}
+
+
+
+#sidebar ul li a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
+  content: '\e259';
+  display: block;
+  position: absolute;
+  font-family: 'Glyphicons Halflings';
+  font-size: 0.6em;
+  right: 30px;
+}
+#sidebar ul li a[aria-expanded="true"]::before {
+  content: '\e260';
+}
+
+
+ul ul a {
+  font-size: 0.9em !important;
+  padding-left: 30px !important;
+  background: #0e2335
+
+}
+
+
+
+
+/*form styles*/
+#msform {
+  text-align: center;
+  position: relative;
+  margin-top: 30px;
+}
+
+#msform fieldset {
+  background: white;
+  border: 0 none;
+  border-radius: 0px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.4);
+  padding: 20px 15px;
+  box-sizing: border-box;
+  width: 100%;
+
+
+  /*stacking fieldsets above each other*/
+  position: relative;
+}
+
+/*Hide all except first fieldset*/
+#msform fieldset:not(:first-of-type) {
+  display: none;
+}
+
+/*inputs*/
+
+
+#msform .action-button-previous {
+  width: 100px;
+  background: #C5C5F1;
+  font-weight: bold;
+  color: white;
+  border: 0 none;
+  border-radius: 25px;
+  cursor: pointer;
+  padding: 10px 5px;
+  margin: 10px 5px;
+}
+
+#msform .action-button-previous:hover, #msform .action-button-previous:focus {
+  box-shadow: 0 0 0 2px white, 0 0 0 3px #C5C5F1;
+}
+
+/*headings*/
+.fs-title {
+  font-size: 26px;
+  text-transform: uppercase;
+  color: #2C3E50;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.fs-subtitle {
+  font-weight: normal;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/*progressbar*/
+#progressbar {
+  margin-bottom: 30px;
+  overflow: hidden;
+  /*CSS counters to number the steps*/
+  counter-reset: step;
+}
+
+#progressbar li {
+  list-style-type: none;
+  color: black;
+  text-transform: uppercase;
+  font-size: 12px;
+  width: 20%;
+  float: left;
+  position: relative;
+  letter-spacing: 1px;
+}
+
+#progressbar li:before {
+  content: counter(step);
+  counter-increment: step;
+  width: 24px;
+  height: 24px;
+  line-height: 26px;
+  display: block;
+  font-size: 12px;
+  color: #333;
+  background: white;
+  border-radius: 25px;
+  margin: 0 auto 10px auto;
+}
+
+/*progressbar connectors*/
+#progressbar li:after {
+  content: '';
+  width: 100%;
+  height: 2px;
+  background: white;
+  position: absolute;
+  left: -50%;
+  top: 9px;
+  z-index: -1; /*put it behind the numbers*/
+}
+
+#progressbar li:first-child:after {
+  /*connector not needed before the first step*/
+  content: none;
+}
+
+/*marking active/completed steps green*/
+/*The number of the step and the connector before it = green*/
+#progressbar li.active:before, #progressbar li.active:after {
+  background:#337ab7;
+  color: white;
+}
+
+#progressbar li {
+  list-style-type: none;
+  color: black;
+  text-transform: uppercase;
+  font-size: 12px;
+  width: 20%;
+  float: left;
+  position: relative;
+  letter-spacing: 1px;
+}
+
+#progressbar li:before {
+  content: counter(step);
+  counter-increment: step;
+  width: 24px;
+  height: 24px;
+  line-height: 26px;
+  display: block;
+  font-size: 12px;
+  color: #333;
+  background: white;
+  border-radius: 25px;
+  margin: 0 auto 10px auto;
+}
+
+/*progressbar connectors*/
+#progressbar span:after {
+  content: '';
+  width: 100%;
+  height: 2px;
+  background: white;
+  position: absolute;
+  left: -50%;
+  top: 9px;
+  z-index: -1; /*put it behind the numbers*/
+}
+
+#progressbar span:first-child:after {
+  /*connector not needed before the first step*/
+  content: none;
+}
+
+/*marking active/completed steps green*/
+/*The number of the step and the connector before it = green*/
+#progressbar span.active:before, #progressbar span.active:after {
+  background:#337ab7;
+  color: white;
+}
+
+
+
+
+#ProdTable_wrapper , #CatigoryTable_wrapper{
+
+  width: 100%;
+}
+
+
+.tabbable{
+  width:416px;
+}
+
+.nav-tabs {
+  overflow-x: auto;
+ overflow-y: hidden;
+ display: -webkit-box;  
+ display: -moz-box;   
+}
+.nav-tabs>li {
+   float:none;
+}
+
+
+.Prod{
+
+border:1px #afafaf solid;
+border-radius: 4px;
+padding:4px;
+margin-top: 8px;
+height: 160px;
+position: relative;
+
+}
+
+.Prod  button {
+
+padding: 0px;
+
+
+}
+
+
+.Prod  button img {
+
+  width:150px;
+  height: 150px;
+}
+
+
+.ProdBody{
+  text-align: center;
+  font-weight: bold;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.699);
+  width: 94%;
+  bottom: 14px;
+  color: black;
+
+}
+
+.ProdBody h5{
+  text-align: center;
+  font-weight: bold;
+
+}
+
+.itemsTab{
+
+overflow-y: auto;
+height:520px;
+
+}

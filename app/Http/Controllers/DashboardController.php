@@ -37,8 +37,8 @@ class DashboardController extends Controller
 
 public function mainDashboard()
 {
-  $chekPlan=Auth::user();
-  $getUser=Auth::user();
+  $chekPlan=Auth::guard("StoreUsers")->user();
+  $getUser=Auth::guard("StoreUsers")->user();
   $userId=$getUser["id"];
 
   //if No Plan activated redirect to Set Plan Route
@@ -59,7 +59,7 @@ public function mainDashboard()
 public function SetPlanGet()
 {
 
-$getUser=Auth::user();
+$getUser=Auth::guard("StoreUsers")->user();
 
 if($getUser['PlanType'] =="0"){
 
@@ -82,7 +82,10 @@ else{
 
 public function PayStripe(Request $request)
 {
-  Stripe::setApiKey('sk_test_cQXNnp0QPOEcJ5PavfQuBp1H00a71iJxB0');
+ 
+
+  Stripe::setApiKey(config("app.StripeSecKey"));
+
 
 
 
@@ -111,7 +114,7 @@ elseif($request->get('planType') == "4"){
     "description"=>"Payment Done :) "
     ));
   
-    $getUser=Auth::user();
+    $getUser=Auth::guard("StoreUsers")->user();
     $userId=$getUser["id"];
     $getU=StoreUser::find($userId);
     $updatePlan=$getU->update(["PlanType"=>$request->get('planType'),"PlanDayLeft"=>$Days]);
@@ -162,8 +165,8 @@ elseif($validate['PlanType']=="4"){
 
 $apiContext = new \PayPal\Rest\ApiContext(
   new \PayPal\Auth\OAuthTokenCredential(
-    env('PAYPAL_CLIENT_ID','AdN894k0KvLi6iqmp4GJzE30bRNuXSlzkzt6FzD-Ee3gzVss15-V4uUhKb1Hc7WQi-slrWL4nUHChklx'),
-    env('PAYPAL_SECERET','EGWsnPb15rEcVbrOaplbJuQhVV3S-soEFSVJNpCDEu5wrkRCOxKsusf8PsRXjL26ZeI3041tTdkNKOQc')
+   config("app.PayPalId"),
+   config("app.PayPalSeceret")
   )
 );
 
@@ -280,7 +283,7 @@ elseif($validate['PlanType']=="4"){
 
 }
 
-$getUser=Auth::user();
+$getUser=Auth::guard("StoreUsers")->user();
 $userId=$getUser["id"];
 
 $findUser=StoreUser::find($userId);
@@ -310,7 +313,7 @@ public function AddStorePost(Request $request)
 {
  
 
- $getUser=Auth::user();
+ $getUser=Auth::guard("StoreUsers")->user();
  $userId=$getUser['id'];
 
  //set Plan Limit
@@ -340,7 +343,7 @@ public function AddStorePost(Request $request)
    $getStores=Stores::where("StoreName","=",$request->input("StoreNameI"))->count();
  
    if($getStores == 1){
-     return redirect()->route("Dashboard")->with('err',["err"=>"1","message"=>"Store is alerady exists"]);
+     return redirect()->route("Dashboard")->with('err',["err"=>"1","message"=>"StoreNameErr"]);
    }
    else{
     $saveStore=new Stores([
@@ -349,11 +352,11 @@ public function AddStorePost(Request $request)
       "StoreUser"=>$userId
     ]);
     $saveStore->save();
-    return redirect()->route("Dashboard")->with('err',["err"=>"0","message"=>"Store Created Succesfuly"]);
+    return redirect()->route("Dashboard")->with('err',["err"=>"0","message"=>"StoreCreatedErr"]);
    }
  }
  else{
-  return redirect()->route("Dashboard")->with('err',["err"=>"1","message"=>"Cant Create New Store"]);
+  return redirect()->route("Dashboard")->with('err',["err"=>"1","message"=>"PlanStoreErr"]);
  }
   
 }
@@ -363,7 +366,7 @@ public function AddStorePost(Request $request)
 
 public function DelStoreGet()
 {
- $getUser=Auth::user();
+ $getUser=Auth::guard("StoreUsers")->user();
  $userId=$getUser['id'];
 
  $getStores=Stores::where("StoreUser",'=',$userId)->get();
@@ -408,11 +411,7 @@ public function DelStoreGet2($StoreId)
   $getStore->delete();
 
 
-  return redirect()->route("DelStore")->with('err',["err"=>"0","message"=>"Store Deleted Successfuly"]);
-
+  return redirect()->route("DelStore")->with('err',["err"=>"0","message"=>"StoreDeletedErr"]);
 
 }
-
-
-
 }

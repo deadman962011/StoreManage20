@@ -1,5 +1,10 @@
 @extends('layout.nativeBase')
 
+
+@section('title')
+    <title>{{ trans('lang.KitchenViewTitle') }}</title>
+@endsection
+
 @section('style')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection

@@ -63,7 +63,6 @@ background-color:rgb(231, 231, 231);
   position: relative;
   background-color: white;
   top: 120px;
-  height: 300px;
   background: white;
   border: 0 none;
   border-radius: 0px;
@@ -79,10 +78,12 @@ background-color: white;
 margin: 25px 12px 25px 12px;
 padding:20px;
 border-radius: 4px;
-min-height: 93vh;
 position: relative;
-
+min-height: 553px;
 }
+
+
+
 
 
 .Dashboard2{
@@ -96,27 +97,44 @@ position: relative;
 
 
 .StoreContent{
-  width: 78%;
+ width: 78%;
 }
 
 .showTables{
 
-  border: 1px solid blue;
+  border: 1px solid #ccc;
   height:250px;
-  border-radius: 10px;
   overflow-y: auto;
 
 }
 
+.showTables  label input[type="radio"]{
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.showTables  label img {
+  border-radius:12px;
+  padding:10px;
+  border: 1px solid #ccc;
+}
+
+.showTables  label input[type="radio"]:checked + img  {
+  border-radius:12px;
+  border: 1px solid rgb(0, 119, 255);
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  box-shadow: outset 0 1px 1px rgb(53, 147, 255)
+}
+
+
 .resTable{
   text-align: center;
     display: inline-block;
-
     border-radius: 10px;
     margin: 10px;
     padding: 8px;
 }
-
 
 
 .OrderTabs{
@@ -128,9 +146,9 @@ position: relative;
   height: 640px;
   overflow-y: scroll;
   display: inline-block;
-  min-width: 320px;
-
+  min-width: 160px;
   list-style: none;
+  padding:0px
 }
 
 
@@ -138,25 +156,37 @@ position: relative;
   border-top:1px #d4d4d4 solid;
   border-bottom: 1px #d4d4d4 solid;
   padding: 10px;
+}
 
+.OrderTabs li a {
+
+  color:black;
+  font-weight: bold;
 
 }
 
 
 .OrderTabs li.active {
   cursor: default;
-  background-color:#d4d4d4;
+  background-color:#f3f2f2;
 }
 
 
 
 .OrderTabsCont{
-  width: 62%;
   height: 640px;
   overflow-y: scroll;
   padding: 16px;
   position: absolute;
   display: inline-block;
+  width: 80%;
+}
+
+.OrderTypeSet label{
+
+  display:inline-block;
+  padding: 12px;
+
 }
 
 .OrderTypeSet label input[type=radio] { 
@@ -164,15 +194,22 @@ position: relative;
   opacity: 0;
   width: 0;
   height: 0;
-
 }
 
-.OrderTypeSet label input[type=radio] +img { 
+.OrderTypeSet label input[type=radio] + img { 
   cursor: pointer;
+  width:160px;
+  border-radius:12px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  box-shadow: outset 0 1px 1px rgba(0,0,0,.075)
 }
 
-.OrderTypeSet input[type=radio]:checked + img {
-  outline: 2px solid #f00;
+.OrderTypeSet input[type=radio]:checked +  img {
+  border: 1px solid rgb(0, 119, 255);
+  border-radius:12px;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  box-shadow: outset 0 1px 1px rgb(53, 147, 255)
 
 }
 
@@ -187,7 +224,7 @@ position: relative;
 .OrderDetails h3 span {
   font-size: 16px;
   font-weight: normal;
-  margin-right:40px;
+  margin-right: 36px;
 }
 
 
@@ -226,10 +263,6 @@ min-width: 220px;
 max-width: 220px;
 } 
 
-.StoreContent{
-  width:100%
-}
-
 .Prod{
   height:180px !important;
 }
@@ -238,10 +271,48 @@ max-width: 220px;
   height: 170px !important;
 }
 
+.OrderTypeSet label input[type=radio] + img { 
+  cursor: pointer;
+  width:100px;
+}
 
 
+.OrderTypeSet label{
+  padding: 4px;
+}
+
+div.TextCenter {
+  padding:0 10px;
+}
+
+.itemsTab{
+  height: 450px !important;
+}
+
+
+.StoreContent{
+  width: 100%;
+ }
 
 }
+
+
+@media  (max-width:768px) {
+  .PosPanel{
+    height: 950px !important;
+  }
+
+  .itemsTab{
+    height: 850px !important;
+  }
+}
+
+
+.PosPanel{
+height:620px;
+}
+
+
 
 #sidebar.active {
   margin-left: -250px;
@@ -554,6 +625,7 @@ padding: 0px;
 .ProdBody h5{
   text-align: center;
   font-weight: bold;
+  white-space: pre-line;
 
 }
 
@@ -568,7 +640,7 @@ height:520px;
   padding: 12px;
   font-size: 16px;
   font-weight: bold;
-  background: #e7e7e7;
+  background-color: #f8f8f8 ;
   border: 1px solid #d2d2d2;
 }
 
@@ -577,7 +649,7 @@ height:520px;
   padding: 12px;
   font-size: 16px;
   font-weight: bold;
-  border: 1px solid #e7e7e7;
+  border: 1px solid #e2e2e2;
 }
 
 .NotifElErr{
@@ -627,5 +699,27 @@ height:20px
     border: 1px #e7e7e7 solid;
 }
 .UserBtn ul li:hover{
-    border-left: 3px red solid;
+    border-left: 3px #286090 solid;
+    background-color: #e2e2e2 ;
+}
+
+.UserBtn ul li a:hover{
+  background-color: #e2e2e2;
+}
+
+
+
+
+
+.Footer{
+  height: 85px;
+  bottom: 0px;
+  background-color: #1f1f1f;
+  position: relative;
+  bottom:0px;
+}
+
+.Footer h5 {
+  padding: 30px;
+  color: #c7c7c7;
 }

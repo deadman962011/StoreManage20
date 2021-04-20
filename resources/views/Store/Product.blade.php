@@ -1,8 +1,14 @@
 @extends('layout.nativeBase')
 
 
+
+@section('title')
+    <title>{{ trans('lang.ProductsViewTitle') }}</title>
+@endsection
+
+
 @section('style')
-<link rel="stylesheet" href="http://127.0.0.1/cdn/store-manage/dataTables.bootstrap.min.js">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css">
 <link rel="stylesheet" href="http://127.0.0.1/cdn/datatables-responsive/dataTables.responsive.css">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
@@ -41,7 +47,7 @@
       <tr>
         <form action="{{ route("AddProd",["StoreType"=>$StoreType,"StoreId"=>$StoreId]) }}" enctype='multipart/form-data' method="post">
             <td><input type="file" name="ProdImgI" style='width:100px' ></td>
-            <td><input type="text" name="ProdNameI"    placeholder="Product Name" class="form-control"></td>
+            <td><input type="text" name="ProdNameI" style='width:125px'    placeholder="{{ trans('lang.ProductPlaceHolderName') }}" class="form-control"></td>
             <td>
               <select name="ProdCatigoryI"  class="form-control">
                 @foreach ($Catigories as $catigory)
@@ -49,7 +55,7 @@
                 @endforeach
               </select>
             </td>
-            <td ><input style=" width:90px;" type="text" name="ProdPriceI" placeholder="Price"  class="form-control"></td>
+            <td ><input style=" width:90px;" type="text" name="ProdPriceI" placeholder="{{ trans('lang.ProductPlaceHolderPrice') }}"  class="form-control"></td>
               <td>{{ $now }} {{ csrf_field()}}</td>
             <td>
                 <input style='width:90px;' type='submit' class="btn btn-primary ">

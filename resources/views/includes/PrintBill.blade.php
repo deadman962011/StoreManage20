@@ -1,11 +1,7 @@
 
-
-
-
-
 <html>
     <head>
-        <link rel="stylesheet" href="http://127.0.0.1/cdn/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     </head>
     <body>
         
@@ -19,10 +15,10 @@
 <table class="table ">
     <thead>
         <tr>
-            <th>Product Name </th>
-            <th>Product Price</th>
-            <th>Prdouct Quantity</th>
-            <th>Totoal Price</th>
+            <th>{{ trans('lang.billProdName') }}</th>
+            <th>{{ trans('lang.billPrice') }}</th>
+            <th>{{ trans('lang.billQuant') }}</th>
+            <th>{{ trans('lang.billTotalPrice') }}</th>
         </tr>
     </thead>
     <tbody>

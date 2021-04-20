@@ -12,7 +12,7 @@
 
 <!-- MultiStep Form -->
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-offset-1 col-sm-10 col-xs-12">
         <form id="msform" class='form-horizontal' method="post">
             <!-- progressbar -->
             <ul id="progressbar">
@@ -21,49 +21,47 @@
             </ul>
             <!-- fieldsets -->
             <fieldset>
-                @if(!empty($message))
-                 <h2 class="fs-title">{{$message}}</h2>
-                @endif
+
                 <h2 class="fs-title">{{ trans("lang.signUpField1Title") }}</h2>
-                <h3 class="fs-subtitle">{{trans("lang.signUpField1Desc") }}</h3>
+                <br>
                 <div class="form-group">
                 <div class="col-sm-2"><label for="FullNameI" class="form-label">{{ trans("lang.formFullNameTitle") }}</label></div>
-                    <div class="col-sm-8"><input type="text" name="FullNameI" placeholder="ادخل الاسم الكامل هنا" class="form-control" required></div>
+                <div class="col-sm-9"><input type="text" name="FullNameI" placeholder="{{ trans('lang.FormPlaceHolderFullName') }}" class="form-control" required></div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-2"><label for="PhoneI" class="form-label">{{ trans("lang.formPhoneNumTitle") }}</label></div>
-                    <div class="col-sm-8"><input type="text" name="PhoneI" placeholder="ادخل رقم الهاتف  هنا" class="form-control" required></div>
+                    <div class="col-sm-9"><input type="text" name="PhoneI" placeholder="{{ trans('lang.FormPlaceHolderPhone') }}" class="form-control" required></div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-2"><label for="AddressI" class="form-label">{{ trans("lang.formAddressTitle") }}</label></div>
-                    <div class="col-sm-8"><input type="text" name="AddressI" placeholder="ادخل العنوان هنا" class="form-control" required></div>
+                    <div class="col-sm-9"><input type="text" name="AddressI" placeholder="{{ trans('lang.FormPlaceHolderAddress') }}" class="form-control" required></div>
                 </div>  
 
-                <input type="button" name="next" class="next action-button btn btn-primary" value="Next"/>
+                <input type="button" name="next" class="next action-button btn btn-primary" value="{{ trans("lang.Next") }}"/>
             </fieldset>
             <fieldset>
                 <h2 class="fs-title">{{ trans('lang.signUpField2Title')}}</h2>
-                <h3 class="fs-subtitle">{Your presence on the social network}</h3>
+                <br>
                 <div class="form-group " id='emailCheckG'>
                     <div class="col-sm-2"><label for="EmailI" class="form-label">{{ trans("lang.formEmailTitle") }}</label></div>
-                    <div class="col-sm-6"><input id='emailCheck' type="email" name="EmailI" placeholder="(ادخل الايميل  يمكنك  (تسجيل الدخول من خلاله" class="form-control" required></div>
+                    <div class="col-sm-8"><input id='emailCheck' type="email" name="EmailI" placeholder="{{ trans('lang.FormPlaceHolderEmail') }}" class="form-control" required></div>
                     <span id='emailMessage'></span>
                    </div>
                 <div class="form-group " id='UserCheckG'>
                     <div class="col-sm-2"><label for="UserNameI" class="form-label">{{ trans("lang.formUserNameTitle") }}</label></div>
-                    <div class="col-sm-6"><input id='UserNameCheck' type="text" name="UserNameI" placeholder="(ادخل اسم المستخدم  يمكنك  (تسجيل الدخول من خلاله" class="form-control" required></div>
+                    <div class="col-sm-8"><input id='UserNameCheck' type="text" name="UserNameI" placeholder="{{ trans('lang.FormPlaceHolderUser') }}" class="form-control" required></div>
                     <span id='userNameMessage'></span>
                    </div>
                    <div class="form-group" id='firstPassG'>
                     <div class="col-sm-2"><label for="PasswordI" class="form-label">{{ trans("lang.formPaswordTitle") }}</label></div>
-                    <div class="col-sm-6"><input type="password" name="PasswordI" placeholder="ادخل كلمة المرور هنا" class="form-control" id='firstPass' required></div>
+                    <div class="col-sm-8"><input type="password" name="PasswordI" placeholder="{{ trans('lang.FormPlaceHolderPass') }}" class="form-control" id='firstPass' required></div>
                    </div> 
                    <div class="form-group" id='SecPassG'>
                     <div class="col-sm-2"><label for="Passwor2I" class="form-label" >{{ trans("lang.formPasswordRTitle") }}</label></div>
-                    <div class="col-sm-6"><input type="password" name="Passwor2I" placeholder="كرر كلمة المرور" class="form-control" id='password2' required></div>
+                    <div class="col-sm-8"><input type="password" name="Passwor2I" placeholder="{{ trans('lang.FormPlaceHolderPassRp') }}" class="form-control" id='password2' required></div>
                    </div> 
-                <input type="submit"  class="btn btn-primary">
-                <input type="button" name="previous" class="previous btn btn-danger" value="Previous"/>
+                <input type="submit" value="{{ trans("lang.Register") }}"  class="btn btn-primary">
+                <input type="button" name="previous" class="previous btn btn-danger" value="{{ trans('lang.Previous') }}"/>
 
             </fieldset>
 
@@ -82,11 +80,13 @@ $(document).ready(function(){
 
 $('#UserNameCheck').change(function(){
     var username= $('#UserNameCheck').val();
-    if(username != ''){
+    if(username != '' && username.length >6){
      
         $.ajax({url:'http://127.0.0.1:8000/users/checkForm',
-                method:"GET",
-                data:{username:username},
+                method:"POST",
+                data:{username:username,
+                      _token:"{{ csrf_token()}}"
+                },
                 success:function(dataU){
                 if(dataU.err == 0){
                     $('#UserCheckG').removeClass('has-error')
@@ -113,12 +113,13 @@ $('#UserNameCheck').change(function(){
 $('#emailCheck').change(function(){
   var email = $('#emailCheck').val();
 
-  if(email != ''){
+  if(email != '' && email.length >10){
     $.ajax({url:'{{ route("CheckSignUp") }}',
             method:'POST',
-            data:{email:email},
+            data:{email:email,
+                _token:"{{ csrf_token()}}"
+            },
             success:function(data){
-                console.log(data)
              
              if(data.err == 0){
                $('#emailCheckG').removeClass('has-error')
@@ -144,8 +145,6 @@ $('#emailCheck').change(function(){
 $('#password2').change(function(){
     var firstPass = $('#firstPass').val();
     var SecPass = $('#password2').val();
-    console.log(firstPass)
-    console.log(SecPass)
   if(SecPass != ''){
     if( firstPass === SecPass){
         $('#firstPassG').removeClass('has-error')
@@ -206,8 +205,8 @@ $('#firstPass').change(function(){
 
 
 </script>
-<script src="http://127.0.0.1/cdn/jquery/jquery.easing.min.js"></script>
-<script src="http://127.0.0.1/cdn/store-manage/multiStepForm.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script> 
+<script src="{{ url("inc/js/multiStepForm.js") }}"></script>
 @endsection
 
 

@@ -1,5 +1,8 @@
 @extends("layout.base")
 
+@section('title')
+    <title>{{ trans("lang.DelStoreViewTitle") }}</title>
+@endsection
 
 @section("content")
 

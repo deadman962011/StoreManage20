@@ -8,6 +8,8 @@
     <!-- Bootstrap CSS -->
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
     <link rel="stylesheet" href="{{ url('/inc/css/style.css')}}">
   @if( str_replace('_','-',app()->getLocale()) == 'ar' )
     <link rel="stylesheet" href="{{ url('/inc/css/rtlStyle.css')}}">
@@ -17,9 +19,7 @@
 <!-- compiled and minified theme CSS -->
 	@endif
 
-
-
-    <title>Hello, world!</title>
+   @yield("title")
     
     @yield('style')
 </head>
@@ -41,7 +41,18 @@
     $(".NotifBtn").click(function(){
     console.log("test")
   })
-  
+
+  $(".collapse").on("show.bs.collapse",function(){
+
+$(".collapse.in").each(function(){
+  $(this).collapse("hide");
+})
+})
+
+
+
+
+
 </script>
 
 

@@ -1,5 +1,9 @@
 @extends('layout.nativeBase')
 
+@section('title')
+    <title>{{ trans('lang.PosViewTitle') }}</title>
+@endsection
+
 
 @section('style')
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -11,48 +15,50 @@
 <div class="row">
 
       <div class=" .col-xs-12 Btns"> 
-        <a href='{{ route("StoreMain",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">Dashboard</a>
-        <a href='{{ route("Kitchen",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">Kitchen</a>
-        <a href='{{ route("Delivery",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">Delivery</a>
-        <a href='{{ route("Waiter",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">Waiters</a>
-        <a href='{{ route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">Products</a>
-        <a href='{{ route("Catigories",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">Catigories</a>
+        <a href='{{ route("StoreMain",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">{{ trans('lang.DashboardViewTitle') }}</a>
+        <a href='{{ route("Kitchen",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">{{ trans('lang.SideNavResKitchen') }}</a>
+        <a href='{{ route("Delivery",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">{{ trans('lang.SideNavDelivery') }}</a>
+        <a href='{{ route("Waiter",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">{{ trans('lang.SideNavWaiter') }}</a>
+        <a href='{{ route("Products",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">{{ trans('lang.SideNavProds') }}</a>
+        <a href='{{ route("Catigories",['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}' class="btn btn-default btn-lg">{{ trans('lang.SideNavCats') }}</a>
         
-        <button data-toggle="modal" data-target="#WaitingPay" class="btn btn-default btn-lg">Waiting For Payment</button>
+        <button data-toggle="modal" data-target="#WaitingPay" class="btn btn-default btn-lg">{{ trans('lang.WatingPaymentBut') }}</button>
       </div>
 
         @if (!empty(session('err')))
         @if (session('err')['err'] == "0")
         <div id='StoreAlert' class="alert alert-success col-sm-6 col-sm-offset-3">
-        <strong>{{ session('err')['message'] }}  <a href="{{ route("PrintOrder",["StoreType"=>$StoreType,"StoreId"=>$StoreId,"OrderId"=>session('err')['OrderId']]) }}">Click Here To Print Bill</a> </strong>
+        <strong>{{  trans("lang.".session('err')['message'])    }}  <a href="{{ route("PrintOrder",["StoreType"=>$StoreType,"StoreId"=>$StoreId,"OrderId"=>session('err')['OrderId']]) }}">Click Here To Print Bill</a> </strong>
         </div>
         @endif
         @if (session('err')['err'] == "1")
         <div id='StoreAlert' class="alert alert-danger col-sm-6 col-sm-offset-3" >
-        <strong>{{ session('err')['message'] }}</strong>
+        <strong>{{  trans("lang.".session('err')['message'])    }}</strong>
         </div>
         @endif      
         @endif
 
 
 
-      
 
-        <div class="col-sm-6 col-xs-12 Dashboard" style='overflow-y: auto; height: 520px;'>
+
+
+
+        <div class="col-sm-6 col-xs-12 Dashboard PosPanel" style='overflow-y: auto;'>
           
             <div class=" col-xs-12 btn-group btn-group-justified " style="margin: 8px;width:auto;">
-                <div class="btn-group"><button data-toggle="modal" data-target="#PayModal"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-usd"></span>  pay</button></div>
-                <div class="btn-group"><button data-toggle="modal" data-target="#kitchenModal"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-cutlery"></span>  to Kethen</button></div>
-                <div class="btn-group"><button data-toggle="modal" data-target="#HoldModal"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-hourglass"></span>  Hold</button></div>
-                <div class="btn-group"><button id="cancelOrder"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-trash"></span>  cancel</button></div>
+                <div class="btn-group"><button data-toggle="modal" data-target="#PayModal"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-usd"></span>{{ trans('lang.PospayBut') }}</button></div>
+                <div class="btn-group"><button data-toggle="modal" data-target="#kitchenModal"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-cutlery"></span>{{ trans('lang.PosKitchenBut') }}</button></div>
+                <div class="btn-group"><button data-toggle="modal" data-target="#HoldModal"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-hourglass"></span>{{ trans('lang.PosWaitingBut') }}</button></div>
+                <div class="btn-group"><button id="cancelOrder"  class="btn btn-default btn-md"><span class="glyphicon glyphicon-trash"></span>{{ trans('lang.PosCancelBut') }}</button></div>
               </div>
     
              <table class="table" style="">
                  <thead>
-                         <th>item</th>
-                         <th>price</th>
-                         <th>Quantitiy</th>
-                         <th>Total Price</th>
+                         <th>{{ trans('lang.billProdName') }}</th>
+                         <th>{{ trans('lang.billPrice') }}</th>
+                         <th>{{ trans('lang.billQuant') }}</th>
+                         <th>{{ trans('lang.billTotalPrice') }}</th>
                          <th>#</th>
                      
                  </thead>
@@ -62,16 +68,16 @@
              </table>
              <br>
        </div>
-        <div class="col-sm-5 col-xs-12 Dashboard">   
+        <div class="col-sm-5 col-xs-12 Dashboard PosPanel">   
                     <div class="tabbable">
-                        <ul class="nav nav-tabs">
-                          <li class='active'><a href="#all" data-toggle="tab">All</a></li>
+                        <ul class="nav nav-tabs" style='height: 55px;overflow-x: overlay;overflow-y: hidden;white-space: nowrap;display: inline-block;width: 100%;'>
+                          <li class='active' style="white-space: nowrap;display: inline-block;float:none"><a href="#all" data-toggle="tab">All</a></li>
                           @foreach ($Catigories as $catigory)
-                           <li><a href="#{{ $catigory['id'] }}" data-toggle="tab">{{ $catigory['CatigoryName'] }} ({{ $catigory['CatigoryProdsNum']}})</a></li>
+                           <li style='white-space: nowrap;display: inline-block;float:none'><a href="#{{ $catigory['id'] }}" data-toggle="tab">{{ $catigory['CatigoryName'] }} ({{ $catigory['CatigoryProdsNum']}})</a></li>
                           @endforeach 
                         </ul>
                         <div class="tab-content itemsTab">
-                         <div id="all" class="tab-pane fade in active ">
+                         <div id="all" class="tab-pane fade in active " style=''>
                           @foreach ($AllProduct as $Product)
                            <div class="col-sm-6 col-md-4 col-xs-6" style="padding-right:4px;padding-left:4px">
                             <div class="Prod">
@@ -106,21 +112,10 @@
                           </div>
                          @endforeach
                         </div>
-                   </div>                    
+                </div>                    
         </div>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -139,32 +134,25 @@
         <div class="modal-body">
         <form action="{{ route("AddOrder",['StoreType'=>$StoreType,'StoreId'=>$StoreId]) }}" class='form-horizontal PayForm' method="post">
           <div class="OrderTypeSet">
-            <label>
-              <input type="radio" name="OrderTypeI"  value='TakeAway' data-toggle="collapse" data-target="#TakeAwayCollapse" checked>
-              <img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/takeaway.png" > 
-            </label>
-            
-            <label>
-              <input type="radio" name="OrderTypeI" value='DineIn' data-toggle="collapse" data-target="#DineInCollapse">
-              <img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/dinein.png">
-            </label>
-            <label>
-              <input type="radio" name="OrderTypeI" value='Delivery' data-toggle="collapse" data-target="#DeliveryCollapse" >
-              <img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/delivery.png" alt="">
-            </label> 
+
+              <label>
+                <input type="radio" name="OrderTypeI"  value='TakeAway' data-toggle="collapse" data-target="#TakeAwayCollapse" checked>
+                <img class='img-responsive' style='' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/takeaway.png" > 
+           
+              </label>
+
+              <label>
+                <input type="radio" name="OrderTypeI" value='DineIn' data-toggle="collapse" data-target="#DineInCollapse">
+           
+                  <img class='img-responsive' style='' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/dinein.png">
+              </label>
+
+              <label>
+                <input type="radio" name="OrderTypeI" value='Delivery' data-toggle="collapse" data-target="#DeliveryCollapse" >
+                <img class='img-responsive' style='' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/delivery.png" >
+              </label> 
           </div>
-    
-              {{-- <label for="OrderType"  class="OrderLabel">
-                <input type="radio" name="OrderTypeI"  value='TakeAway' data-toggle="collapse" data-target="#TakeAwayCollapse"><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/takeaway.png" alt=""> 
-              </label>
-              <label for="OrderType"  class="OrderLabel">
-                <input type="radio" name="OrderTypeI" value='DineIn' data-toggle="collapse" data-target="#DineInCollapse"><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/dinein.png" alt="">
-              </label>
-              <label for="OrderType"  class="OrderLabel">
-                <input type="radio" name="OrderTypeI" value='Delivery' data-toggle="collapse" data-target="#DeliveryCollapse" ><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/delivery.png" alt="">
-              </label>  --}}
-              
-              
+                  
               <div id="TakeAwayCollapse" class="collapse"></div>
               <div id="DineInCollapse" class="collapse">
   
@@ -172,10 +160,16 @@
                  @foreach ($Tables as $table)
                
                      <label  class="resTable">
-                      <input type="radio" name="OrderTableI" value='{{ $table['id'] }}'><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/dinein.png" alt="">
+                      <input type="radio" name="OrderTableI" value='{{ $table['id'] }}'>
+                      <img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/dinein.png" alt="">
+                      <div class='Tableinf'>
+                        <h4>{{ $table['TableName'] }}</h4>
+                        <h4>{{ $table['TableMaxSeat']}}</h4>
+                      </div>
+
                       <input type="hidden" name="OrderTableNameI" value='{{$table['TableName']}}'>
-                      <h4>{{ $table['TableName'] }}</h4>
-                      <h4>{{ $table['TableMaxSeat']}}</h4>
+
+
                      </label>
                     
                  @endforeach
@@ -253,7 +247,7 @@
             <div class="modal-footer">
               {{ csrf_field() }}
                       
-                <div class="col-sm-4">
+                <div class="col-sm-4 col-xs-8">
                   <select class='form-control' name="CasherId">
                     @foreach ($getCasher as $Casher)
                      <option value="{{$Casher['EmployeeName']}}">{{$Casher['EmployeeName']}}</option>        
@@ -301,18 +295,7 @@
             <img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/delivery.png" alt="">
           </label> 
         </div>
-  
-            {{-- <label for="OrderType"  class="OrderLabel">
-              <input type="radio" name="OrderTypeI"  value='TakeAway' data-toggle="collapse" data-target="#TakeAwayCollapse"><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/takeaway.png" alt=""> 
-            </label>
-            <label for="OrderType"  class="OrderLabel">
-              <input type="radio" name="OrderTypeI" value='DineIn' data-toggle="collapse" data-target="#DineInCollapse"><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/dinein.png" alt="">
-            </label>
-            <label for="OrderType"  class="OrderLabel">
-              <input type="radio" name="OrderTypeI" value='Delivery' data-toggle="collapse" data-target="#DeliveryCollapse" ><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/delivery.png" alt="">
-            </label>  --}}
-            
-            
+              
             <div id="TakeAwayCollapseHold" class="collapse"></div>
             <div id="DineInCollapseHold" class="collapse">
 
@@ -359,7 +342,7 @@
 
                </select>
               </div>
-             <input type="submit" value="Success" class="btn btn-primary">  
+             <input type="submit" value="Add To Waiting" class="btn btn-primary">  
               
       </form>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -405,9 +388,9 @@
      
           <h3 class='text-center'>Order Details</h3>
           <div class="OrderDetails"> 
-           <h3>Casher:    <span>{{ $orderD['OrderBy'] }}</span>   Date:  <span>{{ $orderD['created_at']}}</span></h3> 
+           <h3>Casher:  <span>{{ $orderD['OrderBy'] }}</span>  Date:  <span>{{ $orderD['created_at']}}</span> Amount:   <span>{{ $orderD['OrderPrice']}}</span></h3> 
            <h3>Code:   <span>{{ $orderD['OrderName']}}</span>   OrderType:    <span>{{$orderD['OrderType']}}</span></h3>
-           <h3>Order Amount:   <span>{{ $orderD['OrderPrice']}}</span></h3>
+           <h3></h3>
           @if ($orderD['OrderType'] == "Delivery")
           <h3> Delivery Phone:   <span>{{$orderD['OrderInf']['DeliveryPhone']}}</span>  </h3>
           <h3>Delivery Address:  <span>{{$orderD['OrderInf']['DeliveryAddress']}}</span>  </h3>
@@ -454,7 +437,11 @@
                                   @else
                                   <label for='PaymentWayI' class="btn btn-default"> <input type="radio" name='PaymentWayIWait' class='WatingCC' value='CreditCard' data-toggle="collapse" data-target="#CreditCardCollapseWaiting{{$orderD['id']}}" disabled >Credit Card</label>
                                   @endif
-                                  <label for='PaymentWayI' class="btn btn-default"> <input type="radio" name='PaymentWayIWait' value='CashOnDelivery' data-toggle="collapse" data-target="#CashOnDeliveryWaiting{{$orderD['id']}}" disabled>Cash on Delivery</label>
+                                  @if($orderD["OrderType"] =="Delivery")
+                                    <label for='PaymentWayI' class="btn btn-default"> <input type="radio" name='PaymentWayIWait' value='CashOnDelivery' data-toggle="collapse" data-target="#CashOnDeliveryWaiting{{$orderD['id']}}">Cash on Delivery</label>
+                                    @else
+                                    <label for='PaymentWayI' class="btn btn-default"> <input type="radio" name='PaymentWayIWait' value='CashOnDelivery' data-toggle="collapse" data-target="#CashOnDeliveryWaiting{{$orderD['id']}}" disabled>Cash on Delivery</label>
+                                  @endif 
                                 </div>
                               </div>
                             </div>
@@ -539,17 +526,6 @@
           <img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/delivery.png" alt="">
         </label> 
       </div>
-
-          {{-- <label for="OrderType"  class="OrderLabel">
-            <input type="radio" name="OrderTypeI"  value='TakeAway' data-toggle="collapse" data-target="#TakeAwayCollapse"><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/takeaway.png" alt=""> 
-          </label>
-          <label for="OrderType"  class="OrderLabel">
-            <input type="radio" name="OrderTypeI" value='DineIn' data-toggle="collapse" data-target="#DineInCollapse"><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/dinein.png" alt="">
-          </label>
-          <label for="OrderType"  class="OrderLabel">
-            <input type="radio" name="OrderTypeI" value='Delivery' data-toggle="collapse" data-target="#DeliveryCollapse" ><img class='img-responsive' style='width:140px' src="http://127.0.0.1/nexo/NexoPOS-3.15.11/public/modules/gastro//img/delivery.png" alt="">
-          </label>  --}}
-          
           
           <div id="TakeAwayCollapse2" class="collapse"></div>
           <div id="DineInCollapse2" class="collapse">
@@ -797,9 +773,8 @@ $("input[name='OrderTypeI']").change(function(){
 
 </script>
 <script src="https://js.stripe.com/v2/"></script>
-<script type="text/javascript" src="http://127.0.0.1/cdn/jquery/jquery.validate.min.js"></script>
-<script type="text/javascript" src="http://127.0.0.1/cdn/jquery/jquery.payment.min.js"></script>
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.payment/1.2.3/jquery.payment.min.js"></script>
 
 
 
@@ -812,10 +787,12 @@ var target =$(this).data("target")
 
 if(target =="#WaitingPay"){
 var $form = $('.WaitingForm');
+console.log("fuck")
 }
 
 if(target =="#PayModal"){
 var $form = $('.PayForm');
+console.log("you")
 }
       
       $form.find('.subscribe').on('click', payWithStripe);

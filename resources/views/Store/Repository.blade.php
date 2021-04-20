@@ -1,7 +1,14 @@
 @extends('layout.nativeBase')
 
+
+@section('title')
+    <title>{{ trans('lang.RepositoryViewTitle') }}</title>
+@endsection
+
+
 @section("style")
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css">
 <link rel="stylesheet" href="http://127.0.0.1/cdn/datatables-responsive/dataTables.responsive.css">
 @endsection
 
@@ -34,8 +41,8 @@
   <div class="tab-content">
   @foreach ($Repos as $repoProds)
   
-    <div id="{{$repoProds['id']}}" class="tab-pane fade">
-      <table id="dataTable" class="table  table-bordered" style="width:100%">
+    <div id="{{$repoProds['id']}}" class="tab-pane  ">
+      <table id="" class="table  table-bordered table-responsive" >
         <thead>
             <tr>
                 <th>{{ trans("lang.RProdTableName") }}</th>
@@ -47,9 +54,9 @@
         <tbody>
           <tr>
             <form action="{{route("AddRProd",["StoreType"=>$StoreType,"StoreId"=>$StoreId])}}" method="post">
-             <td><input type="text" name="RProdNameI"  class="form-control"></td>
-             <td><input type="text" name="RProdQtyI"  class="form-control"></td>
-             <td><input type="text" name="RProdSourceI"  class="form-control"></td>
+             <td><input type="text" name="RProdNameI" placeholder="{{ trans("lang.ProductPlaceHolderName") }}"  class="form-control"></td>
+             <td><input type="text" name="RProdQtyI" placeholder=' {{ trans("lang.billQuant")}} '  class="form-control"></td>
+             <td><input type="text" name="RProdSourceI" placeholder=" {{ trans("lang.RProdTableSource") }} "  class="form-control"></td>
              <input type="hidden" name="RProdRepoI" value='{{ $repoProds['id'] }}'>
              <td><input type="submit"  class="btn btn-primary" style='width:85px'></td>
             {{ csrf_field() }}
@@ -61,8 +68,8 @@
             <td>{{$RProd['RProdQty']}}</td>
             <td>{{$RProd['RProdSource']}}</td>
             <td>
-              <button class='btn btn-warning UpdateBtn '  data-toggle="modal" data-target="#UpdateRprod" data-RProdId="{{ $RProd['id'] }}">E</button>
-              <a href="{{ route("RepoProdDel",['StoreType'=>$StoreType,'StoreId'=>$StoreId,'RProdId'=>$RProd['id']]) }}" class='btn btn-danger'>X</a>
+              <button class='btn btn-warning UpdateBtn '  data-toggle="modal" data-target="#UpdateRprod" data-RProdId="{{ $RProd['id'] }}"><span class='	glyphicon glyphicon-edit'></span></button>
+              <a href="{{ route("RepoProdDel",['StoreType'=>$StoreType,'StoreId'=>$StoreId,'RProdId'=>$RProd['id']]) }}" class='btn btn-danger'><span class='	glyphicon glyphicon-remove'></span></a>
             </td>
           </tr>        
           @endforeach
@@ -82,6 +89,10 @@
     
       <!-- Modal content-->
       <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Update Product Modal</h4>
+        </div>
         <div class="modal-body">
           <form action="{{route('RprodUpPost',['StoreType'=>$StoreType,'StoreId'=>$StoreId])}}" method="post" class="form-horizontal">
           <div class="form-group">

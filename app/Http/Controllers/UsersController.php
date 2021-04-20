@@ -26,7 +26,7 @@ class UsersController extends Controller
 
   public function SignInGet()
   {
-    if(!empty(Auth::user())){
+    if(!empty(Auth::guard("StoreUsers")->user())){
       return redirect()->route('Dashboard');
     }
     else{
@@ -56,7 +56,7 @@ class UsersController extends Controller
     }
     else
     {
-    return "badddd";
+    return redirect()->route("SignIn")->with("err",['err'=>'1','message'=>'SignInErr']);
     };
   }
 
@@ -64,13 +64,12 @@ class UsersController extends Controller
 
 public function SignUpGet()
 {
-  if(!empty(auth::user())){
+  if(!empty(auth::guard("StoreUsers")->user())){
     return redirect()->route('Dashboard');
         }
-        else{
-          return view("signUpView");
-        }
-                                         
+    else{
+      return view("signUpView");
+    }                                 
 }
 
 public function SignUpPost(Request $request)
@@ -98,7 +97,7 @@ $uniqueUserName=StoreUser::Where('StoreUserName','=',$request->input("UserNameI"
 
 if($uniqueUserName->count() ==1){
 
-  return view("signUpView")->with(['err'=>'1','message'=>" عذرا اسم المستخدم موجود بالفعل"]);
+  return view("signUpView")->with(['err'=>'1','message'=>"SignUpUserNameErr"]);
 }
 
 
@@ -106,7 +105,7 @@ $uniqueEmail=StoreUser::where('StoreEmail','=',$request->input("EmailI"));
 
 if($uniqueEmail->count() ==1){
 
-  return view("signUpView")->with("err",['err'=>'1','message'=>"عذرا الايميل موجود بالفعل  "]);
+  return view("signUpView")->with("err",['err'=>'1','message'=>"SignUpUserNameErr"]);
 }
 
 if($request->input("PasswordI") != $request->input("Passwor2I")){
@@ -136,31 +135,57 @@ $verf=$validatonCode;
 Mail::to($validate["EmailI"])->send(new VerfMail($verf));
 
 //
-return redirect()->route('SignIn');
+return redirect()->route('SignIn')->with("err",['err'=>"0","message"=>"MailAcSended"]);
 
 }
 
 public function chekFormPost( Request $request)
 {
 
+  //get lang
+  $lang=session()->get('locale');
+
+  if($lang == "ar"){
+    $usernameMessage="عذرا اسم المستخدم موجود بالفعل";
+    $usernameAvail="اسم المستخدم متاح";
+    $emailMessage="عذرا الايميل مستخدم بالفعل";
+    $emailAvail="الايميل متاح";
+  }
+  elseif($lang =="en"){
+    $usernameMessage="Sorry, User Name Is Already Exists";
+    $usernameAvail="User Name Is Available";
+    $emailMessage="Sorry, Email Is Already Exists";
+    $emailAvail="Email Is Available";
+  }
+
+
+
+
   if(!empty($request->get('email'))){
 
-  $checkEmail=StoreUser::where('Storeemail','=',$request->get('email'))->get();
+  $validate=$request->validate([
+    "email"=>"required|min:8",
+  ]);
+
+  $checkEmail=StoreUser::where('Storeemail','=',$validate['email'])->get();
   if($checkEmail->count() == 1){
-   return response()->json(["err"=>"1",'message'=>"عذرا الايميل موجود بالفعل"], 200);
+   return response()->json(["err"=>"1",'message'=>$emailMessage], 200);
   }
   else{
-  return response()->json(['err'=>"0","message"=>'الايميل متاح'],200);
+  return response()->json(['err'=>"0","message"=>$emailAvail],200);
   }
   }
 
   if(!empty($request->get('username'))){
-    $checkUserName=StoreUser::where('StoreUserName','=',$request->get('username'))->get();
+    $validate=$request->validate([
+      "username"=>"required|min:6",
+    ]);
+    $checkUserName=StoreUser::where('StoreUserName','=',$validate['username'])->get();
     if($checkUserName->count() == 1){
-      return response()->json(['err'=>'1','message'=>'عذرا اسم المستخدم موجود بالفعل'], 200);
+      return response()->json(['err'=>'1','message'=>$usernameMessage], 200);
     }
     else{
-      return response()->json(['err'=>"0","message"=>'اسم المستخدم متاح'],200);
+      return response()->json(['err'=>"0","message"=>$usernameAvail],200);
     }
   }
 }
@@ -181,17 +206,11 @@ if($getUser['UserStatus'] =="0"){
   $update=$getUser->update([
     "UserStatus"=>"1"
   ]);
-  
-  return "your Account Has Been Activated";
+  return redirect()->route("SignIn")->with("err",['err'=>"0","message"=>"AccountActivatedErr"]);
 }
 else{
-  
-  return redirect()->route("SignIn");
-
+  return redirect()->route("SignIn")->with("err",['err'=>"1","message"=>"SW"]);
 }
-
-
-
 }
 
 
@@ -215,17 +234,15 @@ public function RestPassPost(Request $request)
   ]);
 //find email and send Rest Email To It
 
-$getUser=User::where("Email","=",$validate['RestEmail'])->first();
+$getUser=StoreUser::where("StoreEmail","=",$validate['RestEmail'])->first();
 
+if(!empty($getUser)){
 
 //send Password Mail
-
-
-$UserToken=$getUser['validationToken'];
-
+ $UserToken=$getUser['validationToken'];
  Mail::to($validate["RestEmail"])->send(new RestPass($UserToken));
-
-return "rest PAssword mail sended";
+}
+return redirect()->route("SignIn")->with("err",['err'=>'0','message'=>'MailSendedErr']);
 
 }
 
@@ -253,13 +270,13 @@ if(!empty($getUser)){
 
   $getUser->update(['password'=>bcrypt($validate['NewPass'])]);
 
-  return redirect()->route("SignIn");
+  return redirect()->route("SignIn")->with("err",["err"=>"0","message"=>"PasswordRestedErr"]);
 
 
 }
 else{
 
-  return redirect()->route("main");
+  return redirect()->route("main",["lang"=>session()->get('locale')])->with("err",["err"=>"1","message"=>"SW"]);
 }
 }
 
@@ -268,7 +285,7 @@ else{
 public function UpdateGet()
 {
   
-  $getUser=Auth::User();
+  $getUser=Auth::guard("StoreUsers")->User();
 
   $getApi=StorePayToken::where("UserId",$getUser['id'])->first();
   if(!empty($getApi)){
@@ -329,7 +346,7 @@ public function UpdateUserPost(Request $request)
 public function UpdateNotif()
 {
 
-$getUser=Auth::user();
+$getUser=Auth::guard("StoreUsers")->user();
 $userId=$getUser['id'];
 $getNotifs=StoreNotif::where("UserId",$userId)->get();
 
@@ -362,7 +379,7 @@ $validate=$request->validate([
 
  //if No Old Api Save The NEw Key
 
- $getUser=Auth::User();
+ $getUser=Auth::guard("StoreUsers")->User();
  $UserId=$getUser['id'];
 
  $StoreKey=StorePayToken::where("UserId",$UserId)->first();
@@ -373,7 +390,7 @@ $validate=$request->validate([
     "ApiSeceret"=>$validate['ApiSecret'],
     "ApiPub"=>$validate['ApiPublish']
   ]);
-  return redirect()->route("UpdateUser")->with("err",['err'=>"0","message"=>"Api Keys Updated Successfully"]);
+  return redirect()->route("UpdateUser")->with("err",['err'=>"0","message"=>"ApiKeysUpdated"]);
  }
  else{
  
@@ -384,7 +401,7 @@ $validate=$request->validate([
   ]);
   $SaveKey->save();
 
-  return redirect()->route("UpdateUser")->with("err",['err'=>"0","message"=>"Api Keys Saved Successfully"]);
+  return redirect()->route("UpdateUser")->with("err",['err'=>"0","message"=>"ApiKeysSaved"]);
  }
 }
 

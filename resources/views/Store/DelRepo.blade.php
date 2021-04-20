@@ -1,5 +1,10 @@
 @extends('layout.nativeBase')
 
+@section('title')
+    <title>{{ trans('lang.RepoDelViewTitle') }}</title>
+@endsection
+
+
 @section("content")
 
 <div class='wrapper'>

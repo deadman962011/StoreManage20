@@ -1,5 +1,8 @@
 @extends('layout.nativeBase')
 
+@section('title')
+    <title>{{ trans('lang.UpdateUserViewTitle') }}</title>
+@endsection
 
 @section("content")
 <div class='wrapper'>
@@ -16,24 +19,47 @@
       <div class="col-sm-12 col-md-12 col-xs-12">
       <div class="panel">
         <div class="panel-body">
+          <h4 class="text-center">{{ trans('lang.UpdateUserFormTitle') }}</h4>
+          <br>
           <form action="" method="post" class="form-horizontal">
       
             <div class="form-group">
-              <div class="col-sm-2"><label for="FullNameI">Full Name:</label></div>
+              <div class="col-sm-2"><label for="FullNameI">{{ trans('lang.formFullNameTitle') }}</label></div>
               <div class="col-sm-6"><input type="text" name="FullNameI" value='{{$User['StoreFullName']}}'  class="form-control"></div>
             </div>
             <div class="form-group">
-              <div class="col-sm-2"><label for="UsreNameI">User Name:</label></div>
+              <div class="col-sm-2"><label for="UsreNameI">{{ trans('lang.formUserNameTitle') }}</label></div>
               <div class="col-sm-6"><input type="text" name="UserNameI" value='{{$User['StoreUserName']}}'  class="form-control"></div>
             </div>
             <div class="form-group">
-              <div class="col-sm-2"><label for="AddressI">Address:</label></div>
+              <div class="col-sm-2"><label for="AddressI">{{ trans('lang.formAddressTitle') }}</label></div>
               <div class="col-sm-6"><input type="text" name="AddressI" value='{{$User['StoreAddress']}}' class="form-control"></div>
             </div>
     
             <div class="form-group">
-              <div class="col-sm-2"><label for="EmailI">Email :</label></div>
+              <div class="col-sm-2"><label for="EmailI">{{ trans('lang.formEmailTitle') }}</label></div>
               <div class="col-sm-6"><input type="text" name="EmailI" value='{{$User['StoreEmail']}}'  class="form-control"></div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-2"><label>{{ trans('lang.ActivatedPalnTitle') }}</label></div>
+              <div class="col-sm-6">
+                @if ($User['PlanType'] == "1")
+                  {{ trans("lang.PlanName1") }}
+                @endif
+                @if ($User['PlanType'] == "2")
+                 {{ trans("lang.PlanName2") }}            
+                @endif
+                @if ($User['PlanType'] == "3")
+                 {{ trans("lang.PlanName3") }}   
+                @endif
+                @if ($User['PlanType'] == "4")
+                {{ trans("lang.PlanName4") }} 
+                @endif
+              </div>
+            </div> 
+            <div class="form-group">
+              <div class="col-sm-2"><label >{{ trans('lang.DayLeftTitle') }}</label></div>
+              <div class="col-sm-6">{{$User['PlanDayLeft']}}</div>
             </div> 
            <div class="form-group">
              <input type="hidden" name="UserId" value="{{ $User['id']}}">
@@ -47,18 +73,17 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Update User</h4>
+              <h4 class="modal-title"></h4>
             </div>
             <div class="modal-body">
               <div class="form-group">
-                <div class="col-md-3"><label for="passwordI">Password:</label></div>
+                <div class="col-md-3"><label for="passwordI">{{ trans('lang.formPaswordTitle') }}</label></div>
                 <div class="col-sm-6"><input type="password" name="PasswordI" class="form-control"></div>
               </div>
               <div class="form-group">
-                <div class="col-sm-3"><label for="Password2I">Repeat Password:</label></div>
+                <div class="col-sm-3"><label for="Password2I">{{ trans('lang.formPaswordTitle') }}</label></div>
                 <div class="col-sm-6"><input type="password" name="Password2I" class="form-control"></div>
               </div>
-    
             </div>
             <div class="modal-footer">
               <input type="submit" value="Update" class="btn btn-primary">
@@ -77,7 +102,8 @@
     <div class="col-sm-12 col-md-12 col-xs-12">
       <div class="panel">
         <div class="panel-body">
-
+          <h4 class="text-center">{{ trans('lang.UpdateUserCCKey') }}</h4>
+          <br>
 
           <form action="{{route("SetApi")}}" method="post" class="form-horizontal">
 

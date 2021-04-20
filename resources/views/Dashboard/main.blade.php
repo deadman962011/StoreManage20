@@ -1,6 +1,12 @@
 @extends("layout.base")
 
 
+@section('title')
+<title>    {{ trans('lang.StoresViewTitle') }}</title>
+
+@endsection 
+
+
 @section("content")
 
  <div  class="StoreContent" >
